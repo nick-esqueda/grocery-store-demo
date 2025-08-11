@@ -1,0 +1,21 @@
+services:
+  db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_PASSWORD=password
+      - MYSQL_USER=grocery-store-user
+      - MYSQL_DATABASE=grocery-store
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "$$MYSQL_USER", "-p$$MYSQL_PASSWORD" ]
+      start_period: 10s
+      interval: 5s
+      timeout: 5s
+      retries: 50
+
+volumes:
+  mysql_data:
