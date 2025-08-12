@@ -1,8 +1,7 @@
 package com.nickesqueda;
 
-import com.nickesqueda.dao.UserDao;
+import com.nickesqueda.dao.GenericDao;
 import com.nickesqueda.entity.User;
-import javax.swing.*;
 import org.flywaydb.core.Flyway;
 import org.hibernate.cfg.Configuration;
 
@@ -11,15 +10,23 @@ public class Main {
     runDbMigrations();
     // SwingUtilities.invokeLater(Main::launchGui); // TODO: why is this necessary?
 
-    var dao = new UserDao();
-    var user =
+    GenericDao<User> userGenericDao = new GenericDao<>(User.class);
+    User user = userGenericDao.findOneByValue("username", "test");
+
+    System.out.println("User: " + user);
+
+    if (user != null) {
+      userGenericDao.delete(user);
+    }
+
+    var newUser =
         User.builder()
             .username("test")
             .email("email@email.com")
             .address("1234 something street")
             .phoneNumber("1234567890")
             .build();
-    dao.saveUser(user);
+    userGenericDao.save(newUser);
   }
 
   private static void launchGui() {

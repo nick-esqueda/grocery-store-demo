@@ -1,9 +1,14 @@
 package com.nickesqueda.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
+import lombok.*;
 
+@Getter
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class User extends AuditableEntity {
