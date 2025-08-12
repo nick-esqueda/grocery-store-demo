@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS pickup_appointments (
     store_id INT NOT NULL,
     order_id INT NOT NULL,
     user_id INT NOT NULL,
-    start_datetime TIMESTAMP NOT NULL, -- TODO: verify - want unix timestamps
+    start_datetime TIMESTAMP NOT NULL,
     end_datetime TIMESTAMP NOT NULL,
     status VARCHAR(20) NOT NULL,
     created_at DATETIME(6) NOT NULL,

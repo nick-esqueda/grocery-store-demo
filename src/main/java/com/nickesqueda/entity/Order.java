@@ -1,0 +1,19 @@
+package com.nickesqueda.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "orders")
+public class Order extends AuditableEntity {
+
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
+
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "store_id", nullable = false)
+  private Store store;
+
+  @Column(nullable = false, length = 20)
+  private String status; // TODO: enum
+}

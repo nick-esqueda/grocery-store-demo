@@ -5,7 +5,6 @@ import lombok.*;
 
 @Getter
 @ToString
-@EqualsAndHashCode
 @MappedSuperclass
 public class BaseEntity {
 
