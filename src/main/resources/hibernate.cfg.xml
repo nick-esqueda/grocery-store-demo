@@ -20,6 +20,6 @@
         <property name="hibernate.show_sql">true</property>
 
         <!-- Entity mapping -->
-        <mapping class="com.nickesqueda.entity.User"/>
+        <mapping class="com.nickesqueda.model.user.User"/>
     </session-factory>
 </hibernate-configuration>

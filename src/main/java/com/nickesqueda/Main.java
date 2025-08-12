@@ -1,7 +1,7 @@
 package com.nickesqueda;
 
-import com.nickesqueda.dao.GenericDao;
-import com.nickesqueda.entity.User;
+import com.nickesqueda.model.GenericDao;
+import com.nickesqueda.model.user.User;
 import org.flywaydb.core.Flyway;
 import org.hibernate.cfg.Configuration;
 

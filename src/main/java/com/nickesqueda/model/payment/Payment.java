@@ -1,5 +1,8 @@
-package com.nickesqueda.entity;
+package com.nickesqueda.model.payment;
 
+import com.nickesqueda.model.AuditableEntity;
+import com.nickesqueda.model.order.Order;
+import com.nickesqueda.model.user.User;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

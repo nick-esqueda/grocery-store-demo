@@ -1,4 +1,4 @@
-package com.nickesqueda.entity;
+package com.nickesqueda.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

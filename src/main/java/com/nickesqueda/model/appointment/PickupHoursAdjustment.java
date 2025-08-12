@@ -1,6 +1,7 @@
-package com.nickesqueda.entity;
+package com.nickesqueda.model.appointment;
 
-import com.nickesqueda.model.DayOfWeek;
+import com.nickesqueda.model.AuditableEntity;
+import com.nickesqueda.model.store.Store;
 import jakarta.persistence.*;
 
 import java.time.LocalTime;

@@ -1,5 +1,6 @@
-package com.nickesqueda.entity;
+package com.nickesqueda.model.user;
 
+import com.nickesqueda.model.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

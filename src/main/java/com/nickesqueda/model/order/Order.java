@@ -1,5 +1,8 @@
-package com.nickesqueda.entity;
+package com.nickesqueda.model.order;
 
+import com.nickesqueda.model.AuditableEntity;
+import com.nickesqueda.model.store.Store;
+import com.nickesqueda.model.user.User;
 import jakarta.persistence.*;
 
 @Entity

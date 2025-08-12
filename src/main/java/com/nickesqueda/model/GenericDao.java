@@ -1,6 +1,5 @@
-package com.nickesqueda.dao;
+package com.nickesqueda.model;
 
-import com.nickesqueda.entity.BaseEntity;
 import com.nickesqueda.util.HibernateUtil;
 import java.util.function.Consumer;
 import org.hibernate.Session;
