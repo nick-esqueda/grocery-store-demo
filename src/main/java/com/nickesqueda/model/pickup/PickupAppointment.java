@@ -1,4 +1,4 @@
-package com.nickesqueda.model.appointment;
+package com.nickesqueda.model.pickup;
 
 import com.nickesqueda.model.AuditableEntity;
 import com.nickesqueda.model.order.Order;
@@ -30,6 +30,7 @@ public class PickupAppointment extends AuditableEntity {
   @Column(name = "end_datetime", nullable = false)
   private LocalTime endDateTime;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
-  private String status; // TODO: use enum
+  private PickupStatus status;
 }

@@ -1,4 +1,4 @@
-package com.nickesqueda.model.appointment;
+package com.nickesqueda.model.pickup;
 
 public enum DayOfWeek {
   SUNDAY,

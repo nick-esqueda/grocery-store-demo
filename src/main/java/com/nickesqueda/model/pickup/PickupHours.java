@@ -1,4 +1,4 @@
-package com.nickesqueda.model.appointment;
+package com.nickesqueda.model.pickup;
 
 
 import com.nickesqueda.model.AuditableEntity;
