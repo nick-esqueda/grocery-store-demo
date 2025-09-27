@@ -17,6 +17,7 @@ public class Order extends AuditableEntity {
   @JoinColumn(name = "store_id", nullable = false)
   private Store store;
 
+  @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)
-  private String status; // TODO: enum
+  private OrderStatus status;
 }
