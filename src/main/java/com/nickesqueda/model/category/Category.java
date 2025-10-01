@@ -2,7 +2,13 @@ package com.nickesqueda.model.category;
 
 import com.nickesqueda.model.AuditableEntity;
 import jakarta.persistence.*;
+import lombok.*;
 
+@Getter
+@ToString(callSuper = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "categories")
 public class Category extends AuditableEntity {

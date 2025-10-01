@@ -1,32 +1,42 @@
 package com.nickesqueda;
 
 import com.nickesqueda.model.GenericDao;
-import com.nickesqueda.model.user.User;
+import com.nickesqueda.model.category.Category;
+import com.nickesqueda.model.product.Product;
 import org.flywaydb.core.Flyway;
 import org.hibernate.cfg.Configuration;
+
+import java.math.BigDecimal;
 
 public class Main {
   public static void main(String[] args) {
     runDbMigrations();
     // SwingUtilities.invokeLater(Main::launchGui); // TODO: why is this necessary?
 
-    GenericDao<User> userGenericDao = new GenericDao<>(User.class);
-    User user = userGenericDao.findOneByValue("username", "test");
+    demo();
+  }
 
-    System.out.println("User: " + user);
+  private static void demo() {
+    var categoryDao = new GenericDao<>(Category.class);
+    var category =
+        Category.builder().name("electronics").description("all electronic devices").build();
+    categoryDao.save(category);
 
-    if (user != null) {
-      userGenericDao.delete(user);
-    }
-
-    var newUser =
-        User.builder()
-            .username("test")
-            .email("email@email.com")
-            .address("1234 something street")
-            .phoneNumber("1234567890")
+    var productDao = new GenericDao<>(Product.class);
+    var product =
+        Product.builder()
+            .name("Phone")
+            .description("A brand new phone")
+            .price(BigDecimal.ONE)
+            .category(category)
             .build();
-    userGenericDao.save(newUser);
+
+    productDao.save(product);
+
+    Category categoryResult = categoryDao.findOneByValue("name", "electronics");
+    Product productResult = productDao.findOneByValue("name", "Phone");
+    System.out.println("Category: " + categoryResult);
+    System.out.println("Product: " + productResult);
   }
 
   private static void launchGui() {

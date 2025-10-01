@@ -21,5 +21,7 @@
 
         <!-- Entity mapping -->
         <mapping class="com.nickesqueda.model.user.User"/>
+        <mapping class="com.nickesqueda.model.category.Category"/>
+        <mapping class="com.nickesqueda.model.product.Product"/>
     </session-factory>
 </hibernate-configuration>

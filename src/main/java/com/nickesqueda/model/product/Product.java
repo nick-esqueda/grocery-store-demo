@@ -3,9 +3,15 @@ package com.nickesqueda.model.product;
 import com.nickesqueda.model.AuditableEntity;
 import com.nickesqueda.model.category.Category;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.math.BigDecimal;
 
+@Getter
+@ToString(callSuper = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "products")
 public class Product extends AuditableEntity {
@@ -20,6 +26,6 @@ public class Product extends AuditableEntity {
   @Column(nullable = false)
   private String description;
 
-  @Column(name = "total_price", nullable = false, precision = 6, scale = 2)
-  private BigDecimal totalPrice;
+  @Column(name = "price", nullable = false, precision = 6, scale = 2)
+  private BigDecimal price;
 }
