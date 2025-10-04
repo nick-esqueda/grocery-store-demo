@@ -1,30 +1,32 @@
-package persistence;
+package com.nickesqueda.testutils;
 
-import com.nickesqueda.model.GenericDao;
-import com.nickesqueda.model.category.Category;
 import org.flywaydb.core.Flyway;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-public class DemoTest {
+public class BaseDaoTest {
 
   protected static MySQLContainer<?> testDb;
 
+  static {
+    testDb = new MySQLContainer<>("mysql:8.0.36");
+    testDb.start();
+  }
+
   @BeforeAll
   static void setup() {
-    initializeContainer();
     buildSessionFactory();
     runDbMigrations();
   }
 
-  private static void initializeContainer() {
-    MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8.0.36");
-    mySQLContainer.start();
-    testDb = mySQLContainer;
+  @AfterEach
+  void resetDbState() {
+    System.out.println("\n@AfterEach - RESETTING DB STATE ##############################");
+    DbTestUtils.resetDbState();
+    System.out.println("@AfterEach - COMPLETED DB RESET ##############################\n");
   }
 
   private static void buildSessionFactory() {
@@ -42,16 +44,5 @@ public class DemoTest {
             .dataSource(testDb.getJdbcUrl(), testDb.getUsername(), testDb.getPassword())
             .load();
     flyway.migrate();
-  }
-
-  @Test
-  public void demoTest() {
-    GenericDao<Category> categoryDao = new GenericDao<>(Category.class);
-    Category category = Category.builder().name("test").description("test").build();
-    categoryDao.save(category);
-
-    Category actualCategory = categoryDao.findOneByValue("name", "test");
-
-    Assertions.assertEquals("test", actualCategory.getName());
   }
 }

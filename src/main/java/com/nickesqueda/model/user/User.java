@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 @Getter
+@Setter
 @ToString(callSuper = true)
 @Builder
 @NoArgsConstructor
