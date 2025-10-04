@@ -6,12 +6,22 @@ import org.hibernate.cfg.Configuration;
 
 public class HibernateUtil {
 
-  @Getter
-  private static final SessionFactory sessionFactory = buildSessionFactory();
+  @Getter private static final SessionFactory sessionFactory = buildSessionFactory();
 
   private static SessionFactory buildSessionFactory() {
     try {
-      return new Configuration().configure().buildSessionFactory();
+      Configuration hibernateConfig = new Configuration().configure();
+
+      if (Boolean.parseBoolean(System.getProperty("isTestRun"))) {
+        hibernateConfig.setProperty(
+            "hibernate.connection.url", System.getProperty("hibernate.connection.url"));
+        hibernateConfig.setProperty(
+            "hibernate.connection.username", System.getProperty("hibernate.connection.username"));
+        hibernateConfig.setProperty(
+            "hibernate.connection.password", System.getProperty("hibernate.connection.password"));
+      }
+
+      return hibernateConfig.buildSessionFactory();
     } catch (Throwable ex) {
       throw new ExceptionInInitializerError(ex);
     }
