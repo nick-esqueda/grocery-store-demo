@@ -5,8 +5,10 @@ import static com.nickesqueda.testutils.TestConstants.TEST_USERNAME;
 
 import com.nickesqueda.model.order.Order;
 import com.nickesqueda.model.order.OrderStatus;
+import com.nickesqueda.model.payment.Payment;
 import com.nickesqueda.model.store.Store;
 import com.nickesqueda.model.user.User;
+import java.math.BigDecimal;
 
 /**
  * Contains utility methods for unit tests.
@@ -40,5 +42,17 @@ public final class EntityTestUtils {
     DbTestUtils.persistEntity(store);
 
     return Order.builder().user(user).store(store).status(OrderStatus.PLACED).build();
+  }
+
+  public static Payment createTestPayment() {
+    Order order = createTestOrder();
+    DbTestUtils.persistEntity(order);
+
+    return Payment.builder()
+        .user(order.getUser())
+        .order(order)
+        .totalPrice(BigDecimal.ONE)
+        .paymentMethodToken("1234")
+        .build();
   }
 }

@@ -4,9 +4,15 @@ import com.nickesqueda.model.AuditableEntity;
 import com.nickesqueda.model.order.Order;
 import com.nickesqueda.model.user.User;
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
+import lombok.*;
 
+@Getter
+@Setter
+@ToString(callSuper = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "payments")
 public class Payment extends AuditableEntity {
