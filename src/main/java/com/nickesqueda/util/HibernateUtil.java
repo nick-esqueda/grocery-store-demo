@@ -12,6 +12,7 @@ public class HibernateUtil {
     try {
       Configuration hibernateConfig = new Configuration().configure();
 
+      // Override Hibernate DB connection properties for unit test runs
       if (Boolean.parseBoolean(System.getProperty("isTestRun"))) {
         hibernateConfig.setProperty(
             "hibernate.connection.url", System.getProperty("hibernate.connection.url"));

@@ -2,6 +2,7 @@ package com.nickesqueda.model.user;
 
 import static com.nickesqueda.testutils.DbTestUtils.findEntityByValue;
 import static com.nickesqueda.testutils.DbTestUtils.persistEntity;
+import static com.nickesqueda.testutils.TestConstants.TEST_ADDRESS;
 import static com.nickesqueda.testutils.TestConstants.TEST_USERNAME;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,7 +21,7 @@ class UserGenericDaoTest extends BaseDaoTest {
         .username(TEST_USERNAME)
         .firstName("Test")
         .lastName("Test")
-        .address("123 Test Dr, Dallas, TX 12345")
+        .address(TEST_ADDRESS)
         .email("test@test.com")
         .phoneNumber("123-456-7890")
         .build();

@@ -21,7 +21,16 @@
 
         <!-- Entity mapping -->
         <mapping class="com.nickesqueda.model.user.User"/>
+        <mapping class="com.nickesqueda.model.store.Store"/>
+        <mapping class="com.nickesqueda.model.order.Order"/>
+        <mapping class="com.nickesqueda.model.payment.Payment"/>
         <mapping class="com.nickesqueda.model.category.Category"/>
         <mapping class="com.nickesqueda.model.product.Product"/>
+        <mapping class="com.nickesqueda.model.order.Order"/>
+        <mapping class="com.nickesqueda.model.cart.CartItem"/>
+        <mapping class="com.nickesqueda.model.inventory.InventoryItem"/>
+        <mapping class="com.nickesqueda.model.pickup.PickupHours"/>
+        <mapping class="com.nickesqueda.model.pickup.PickupHoursAdjustment"/>
+        <mapping class="com.nickesqueda.model.pickup.PickupAppointment"/>
     </session-factory>
 </hibernate-configuration>

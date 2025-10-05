@@ -18,7 +18,7 @@ public class BaseDaoTest {
 
   @BeforeAll
   static void setup() {
-    buildSessionFactory();
+    setDbConnectionProperties();
     runDbMigrations();
   }
 
@@ -29,8 +29,9 @@ public class BaseDaoTest {
     System.out.println("@AfterEach - COMPLETED DB RESET ##############################\n");
   }
 
-  private static void buildSessionFactory() {
+  private static void setDbConnectionProperties() {
     // Set System properties so HibernateUtil knows to use the Testcontainer database
+    // See HibernateUtil.java
     System.setProperty("isTestRun", "true");
     System.setProperty("hibernate.connection.url", testDb.getJdbcUrl());
     System.setProperty("hibernate.connection.username", testDb.getUsername());
