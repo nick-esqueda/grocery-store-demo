@@ -2,7 +2,7 @@ package com.nickesqueda.model.user;
 
 import static com.nickesqueda.testutils.DbTestUtils.findEntityByValue;
 import static com.nickesqueda.testutils.DbTestUtils.persistEntity;
-import static com.nickesqueda.testutils.TestConstants.TEST_ADDRESS;
+import static com.nickesqueda.testutils.EntityTestUtils.createTestUser;
 import static com.nickesqueda.testutils.TestConstants.TEST_USERNAME;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,18 +14,6 @@ import org.junit.jupiter.api.function.ThrowingSupplier;
 class UserGenericDaoTest extends BaseDaoTest {
 
   private final GenericDao<User> userGenericDao = new GenericDao<>(User.class);
-
-  // Usage of this method is necessary to avoid "detached entity" states.
-  private User createTestUser() {
-    return User.builder()
-        .username(TEST_USERNAME)
-        .firstName("Test")
-        .lastName("Test")
-        .address(TEST_ADDRESS)
-        .email("test@test.com")
-        .phoneNumber("123-456-7890")
-        .build();
-  }
 
   @Test
   void testSave() {

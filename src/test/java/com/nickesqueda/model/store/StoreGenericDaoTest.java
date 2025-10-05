@@ -2,6 +2,7 @@ package com.nickesqueda.model.store;
 
 import static com.nickesqueda.testutils.DbTestUtils.findEntityByValue;
 import static com.nickesqueda.testutils.DbTestUtils.persistEntity;
+import static com.nickesqueda.testutils.EntityTestUtils.createTestStore;
 import static com.nickesqueda.testutils.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,10 +14,6 @@ import org.junit.jupiter.api.function.ThrowingSupplier;
 class StoreGenericDaoTest extends BaseDaoTest {
 
   private final GenericDao<Store> storeGenericDao = new GenericDao<>(Store.class);
-
-  private Store createTestStore() {
-    return Store.builder().address(TEST_ADDRESS).totalPickupSpots(10).build();
-  }
 
   @Test
   void testSave() {

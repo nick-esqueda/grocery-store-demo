@@ -4,7 +4,14 @@ import com.nickesqueda.model.AuditableEntity;
 import com.nickesqueda.model.store.Store;
 import com.nickesqueda.model.user.User;
 import jakarta.persistence.*;
+import lombok.*;
 
+@Getter
+@Setter
+@ToString(callSuper = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "orders")
 public class Order extends AuditableEntity {
