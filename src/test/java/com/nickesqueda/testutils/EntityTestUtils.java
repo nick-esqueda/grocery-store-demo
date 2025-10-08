@@ -1,14 +1,13 @@
 package com.nickesqueda.testutils;
 
-import static com.nickesqueda.testutils.TestConstants.TEST_ADDRESS;
-import static com.nickesqueda.testutils.TestConstants.TEST_USERNAME;
-
+import com.github.javafaker.Faker;
 import com.nickesqueda.model.order.Order;
 import com.nickesqueda.model.order.OrderStatus;
 import com.nickesqueda.model.payment.Payment;
 import com.nickesqueda.model.store.Store;
 import com.nickesqueda.model.user.User;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * Contains utility methods for unit tests.
@@ -19,24 +18,29 @@ import java.math.BigDecimal;
  */
 public final class EntityTestUtils {
 
-  public static User createTestUser() {
+  public static final Faker FAKER = new Faker();
+
+  public static User createRandomUser() {
     return User.builder()
-        .username(TEST_USERNAME)
-        .firstName("Test")
-        .lastName("Test")
-        .address(TEST_ADDRESS)
-        .email("test@test.com")
-        .phoneNumber("123-456-7890")
+        .username(UUID.randomUUID().toString())
+        .firstName(FAKER.name().firstName())
+        .lastName(FAKER.name().lastName())
+        .address(FAKER.address().fullAddress())
+        .email(FAKER.internet().emailAddress())
+        .phoneNumber(FAKER.phoneNumber().phoneNumber())
         .build();
   }
 
-  public static Store createTestStore() {
-    return Store.builder().address(TEST_ADDRESS).totalPickupSpots(10).build();
+  public static Store createRandomStore() {
+    return Store.builder()
+        .address(FAKER.address().fullAddress())
+        .totalPickupSpots(FAKER.number().numberBetween(0, 50))
+        .build();
   }
 
-  public static Order createTestOrder() {
-    User user = createTestUser();
-    Store store = createTestStore();
+  public static Order createRandomOrder() {
+    User user = createRandomUser();
+    Store store = createRandomStore();
 
     DbTestUtils.persistEntity(user);
     DbTestUtils.persistEntity(store);
@@ -44,15 +48,15 @@ public final class EntityTestUtils {
     return Order.builder().user(user).store(store).status(OrderStatus.PLACED).build();
   }
 
-  public static Payment createTestPayment() {
-    Order order = createTestOrder();
+  public static Payment createRandomPayment() {
+    Order order = createRandomOrder();
     DbTestUtils.persistEntity(order);
 
     return Payment.builder()
         .user(order.getUser())
         .order(order)
-        .totalPrice(BigDecimal.ONE)
-        .paymentMethodToken("1234")
+        .totalPrice(BigDecimal.valueOf(100, 2))
+        .paymentMethodToken(UUID.randomUUID().toString())
         .build();
   }
 }
