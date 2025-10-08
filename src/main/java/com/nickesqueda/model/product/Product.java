@@ -3,11 +3,11 @@ package com.nickesqueda.model.product;
 import com.nickesqueda.model.AuditableEntity;
 import com.nickesqueda.model.category.Category;
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 import lombok.*;
 
-import java.math.BigDecimal;
-
 @Getter
+@Setter
 @ToString(callSuper = true)
 @Builder
 @NoArgsConstructor

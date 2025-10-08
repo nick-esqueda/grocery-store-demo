@@ -4,7 +4,14 @@ import com.nickesqueda.model.AuditableEntity;
 import com.nickesqueda.model.product.Product;
 import com.nickesqueda.model.store.Store;
 import jakarta.persistence.*;
+import lombok.*;
 
+@Getter
+@Setter
+@ToString(callSuper = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "inventory_items")
 public class InventoryItem extends AuditableEntity {

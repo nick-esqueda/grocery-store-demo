@@ -4,10 +4,17 @@ import com.nickesqueda.model.AuditableEntity;
 import com.nickesqueda.model.product.Product;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import lombok.*;
 
+@Getter
+@Setter
+@ToString(callSuper = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "order_items")
-public class OrderItems extends AuditableEntity {
+public class OrderItem extends AuditableEntity {
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "order_id", nullable = false)

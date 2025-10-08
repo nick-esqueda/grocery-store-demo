@@ -1,12 +1,18 @@
 package com.nickesqueda.model.pickup;
 
-
 import com.nickesqueda.model.AuditableEntity;
 import com.nickesqueda.model.store.Store;
 import jakarta.persistence.*;
-
+import java.time.DayOfWeek;
 import java.time.LocalTime;
+import lombok.*;
 
+@Getter
+@Setter
+@ToString(callSuper = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "pickup_hours")
 public class PickupHours extends AuditableEntity {

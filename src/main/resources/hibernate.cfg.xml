@@ -26,7 +26,7 @@
         <mapping class="com.nickesqueda.model.payment.Payment"/>
         <mapping class="com.nickesqueda.model.category.Category"/>
         <mapping class="com.nickesqueda.model.product.Product"/>
-        <mapping class="com.nickesqueda.model.order.Order"/>
+        <mapping class="com.nickesqueda.model.order.OrderItem"/>
         <mapping class="com.nickesqueda.model.cart.CartItem"/>
         <mapping class="com.nickesqueda.model.inventory.InventoryItem"/>
         <mapping class="com.nickesqueda.model.pickup.PickupHours"/>

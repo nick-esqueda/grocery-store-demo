@@ -2,8 +2,17 @@ package com.nickesqueda.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.nickesqueda.model.cart.CartItemTestHelper;
+import com.nickesqueda.model.category.CategoryTestHelper;
+import com.nickesqueda.model.inventory.InventoryItemTestHelper;
+import com.nickesqueda.model.order.OrderItemTestHelper;
 import com.nickesqueda.model.order.OrderTestHelper;
 import com.nickesqueda.model.payment.PaymentTestHelper;
+import com.nickesqueda.model.pickup.PickupAppointmentTestHelper;
+import com.nickesqueda.model.pickup.PickupHoursAdjustmentTestHelper;
+import com.nickesqueda.model.pickup.PickupHoursTestHelper;
+import com.nickesqueda.model.products.ProductTestHelper;
+import com.nickesqueda.model.store.StoreTestHelper;
 import com.nickesqueda.model.user.UserTestHelper;
 import com.nickesqueda.testutils.BaseDaoTest;
 import com.nickesqueda.testutils.DbTestUtils;
@@ -16,7 +25,21 @@ import org.junit.jupiter.params.provider.ValueSource;
 class GenericDaoTest extends BaseDaoTest {
 
   @ParameterizedTest
-  @ValueSource(classes = {UserTestHelper.class, OrderTestHelper.class, PaymentTestHelper.class})
+  @ValueSource(
+      classes = {
+        UserTestHelper.class,
+        StoreTestHelper.class,
+        OrderTestHelper.class,
+        PaymentTestHelper.class,
+        CategoryTestHelper.class,
+        ProductTestHelper.class,
+        OrderItemTestHelper.class,
+        CartItemTestHelper.class,
+        InventoryItemTestHelper.class,
+        PickupHoursTestHelper.class,
+        PickupHoursAdjustmentTestHelper.class,
+        PickupAppointmentTestHelper.class
+      })
   <T extends BaseEntity, U> void testSave(Class<? extends DaoTestHelper<T, U>> entityTesterClass)
       throws NoSuchMethodException,
           InvocationTargetException,
@@ -44,7 +67,21 @@ class GenericDaoTest extends BaseDaoTest {
   }
 
   @ParameterizedTest
-  @ValueSource(classes = {UserTestHelper.class, OrderTestHelper.class, PaymentTestHelper.class})
+  @ValueSource(
+      classes = {
+        UserTestHelper.class,
+        StoreTestHelper.class,
+        OrderTestHelper.class,
+        PaymentTestHelper.class,
+        CategoryTestHelper.class,
+        ProductTestHelper.class,
+        OrderItemTestHelper.class,
+        CartItemTestHelper.class,
+        InventoryItemTestHelper.class,
+        PickupHoursTestHelper.class,
+        PickupHoursAdjustmentTestHelper.class,
+        PickupAppointmentTestHelper.class
+      })
   <T extends BaseEntity, U> void testFindOneByValue(
       Class<? extends DaoTestHelper<T, U>> entityTesterClass)
       throws NoSuchMethodException,
@@ -73,7 +110,21 @@ class GenericDaoTest extends BaseDaoTest {
   }
 
   @ParameterizedTest
-  @ValueSource(classes = {UserTestHelper.class, OrderTestHelper.class, PaymentTestHelper.class})
+  @ValueSource(
+      classes = {
+        UserTestHelper.class,
+        StoreTestHelper.class,
+        OrderTestHelper.class,
+        PaymentTestHelper.class,
+        CategoryTestHelper.class,
+        ProductTestHelper.class,
+        OrderItemTestHelper.class,
+        CartItemTestHelper.class,
+        InventoryItemTestHelper.class,
+        PickupHoursTestHelper.class,
+        PickupHoursAdjustmentTestHelper.class,
+        PickupAppointmentTestHelper.class
+      })
   <T extends BaseEntity, U> void testUpdate(Class<? extends DaoTestHelper<T, U>> entityTesterClass)
       throws NoSuchMethodException,
           InvocationTargetException,
@@ -104,7 +155,21 @@ class GenericDaoTest extends BaseDaoTest {
   }
 
   @ParameterizedTest
-  @ValueSource(classes = {UserTestHelper.class, OrderTestHelper.class, PaymentTestHelper.class})
+  @ValueSource(
+      classes = {
+        UserTestHelper.class,
+        StoreTestHelper.class,
+        OrderTestHelper.class,
+        PaymentTestHelper.class,
+        CategoryTestHelper.class,
+        ProductTestHelper.class,
+        OrderItemTestHelper.class,
+        CartItemTestHelper.class,
+        InventoryItemTestHelper.class,
+        PickupHoursTestHelper.class,
+        PickupHoursAdjustmentTestHelper.class,
+        PickupAppointmentTestHelper.class
+      })
   <T extends BaseEntity, U> void testDelete(Class<? extends DaoTestHelper<T, U>> entityTesterClass)
       throws NoSuchMethodException,
           InvocationTargetException,
