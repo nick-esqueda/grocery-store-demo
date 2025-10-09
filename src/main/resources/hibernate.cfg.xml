@@ -20,18 +20,18 @@
         <property name="hibernate.show_sql">true</property>
 
         <!-- Entity mapping -->
-        <mapping class="com.nickesqueda.model.user.User"/>
-        <mapping class="com.nickesqueda.model.store.Store"/>
-        <mapping class="com.nickesqueda.model.order.Order"/>
-        <mapping class="com.nickesqueda.model.payment.Payment"/>
-        <mapping class="com.nickesqueda.model.category.Category"/>
-        <mapping class="com.nickesqueda.model.product.Product"/>
-        <mapping class="com.nickesqueda.model.order.OrderItem"/>
-        <mapping class="com.nickesqueda.model.cart.CartItem"/>
-        <mapping class="com.nickesqueda.model.inventory.InventoryItem"/>
-        <mapping class="com.nickesqueda.model.pickup.PickupHours"/>
-        <mapping class="com.nickesqueda.model.pickup.PickupHoursAdjustment"/>
-        <mapping class="com.nickesqueda.model.pickup.PickupAppointment"/>
-        <mapping class="com.nickesqueda.security.Role"/>
+        <mapping class="com.nickesqueda.grocerystoredemo.model.entity.User"/>
+        <mapping class="com.nickesqueda.grocerystoredemo.model.entity.Store"/>
+        <mapping class="com.nickesqueda.grocerystoredemo.model.entity.Order"/>
+        <mapping class="com.nickesqueda.grocerystoredemo.model.entity.Payment"/>
+        <mapping class="com.nickesqueda.grocerystoredemo.model.entity.Category"/>
+        <mapping class="com.nickesqueda.grocerystoredemo.model.entity.Product"/>
+        <mapping class="com.nickesqueda.grocerystoredemo.model.entity.OrderItem"/>
+        <mapping class="com.nickesqueda.grocerystoredemo.model.entity.CartItem"/>
+        <mapping class="com.nickesqueda.grocerystoredemo.model.entity.InventoryItem"/>
+        <mapping class="com.nickesqueda.grocerystoredemo.model.entity.PickupHours"/>
+        <mapping class="com.nickesqueda.grocerystoredemo.model.entity.PickupHoursAdjustment"/>
+        <mapping class="com.nickesqueda.grocerystoredemo.model.entity.PickupAppointment"/>
+        <mapping class="com.nickesqueda.grocerystoredemo.model.entity.Role"/>
     </session-factory>
 </hibernate-configuration>
