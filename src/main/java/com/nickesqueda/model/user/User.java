@@ -1,9 +1,9 @@
 package com.nickesqueda.model.user;
 
 import com.nickesqueda.model.AuditableEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.nickesqueda.security.Role;
+import jakarta.persistence.*;
+import java.util.Set;
 import lombok.*;
 
 @Getter
@@ -35,4 +35,11 @@ public class User extends AuditableEntity {
 
   @Column(name = "recent_payment_method_token")
   private String recentPaymentMethodToken;
+
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "users_roles",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "role_id"))
+  private Set<Role> roles;
 }

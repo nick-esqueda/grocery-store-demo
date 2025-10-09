@@ -15,10 +15,13 @@ import com.nickesqueda.model.pickup.PickupStatus;
 import com.nickesqueda.model.product.Product;
 import com.nickesqueda.model.store.Store;
 import com.nickesqueda.model.user.User;
+import com.nickesqueda.security.Role;
+import com.nickesqueda.security.RoleName;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -33,6 +36,8 @@ public final class EntityTestUtils {
   public static final Faker FAKER = new Faker();
 
   public static User createRandomUser() {
+    Role customerRole = DbTestUtils.findEntityByValue(Role.class, "name", RoleName.ROLE_CUSTOMER);
+
     return User.builder()
         .username(UUID.randomUUID().toString())
         .firstName(FAKER.name().firstName())
@@ -40,14 +45,12 @@ public final class EntityTestUtils {
         .address(FAKER.address().fullAddress())
         .email(FAKER.internet().emailAddress())
         .phoneNumber(FAKER.phoneNumber().phoneNumber())
+        .roles(Set.of(customerRole))
         .build();
   }
 
   public static Store createRandomStore() {
-    return Store.builder()
-        .address(FAKER.address().fullAddress())
-        .totalPickupSpots(10)
-        .build();
+    return Store.builder().address(FAKER.address().fullAddress()).totalPickupSpots(10).build();
   }
 
   public static Order createRandomOrder() {

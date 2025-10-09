@@ -32,5 +32,6 @@
         <mapping class="com.nickesqueda.model.pickup.PickupHours"/>
         <mapping class="com.nickesqueda.model.pickup.PickupHoursAdjustment"/>
         <mapping class="com.nickesqueda.model.pickup.PickupAppointment"/>
+        <mapping class="com.nickesqueda.security.Role"/>
     </session-factory>
 </hibernate-configuration>

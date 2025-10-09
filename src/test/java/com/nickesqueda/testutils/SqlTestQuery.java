@@ -14,7 +14,7 @@ public final class SqlTestQuery {
       SELECT table_name
       FROM information_schema.tables
       WHERE table_schema = DATABASE()
-      AND table_name NOT IN ('flyway_schema_history');
+      AND table_name NOT IN ('flyway_schema_history', 'roles');
       """;
 
   public static final String DISABLE_FOREIGN_KEY_CHECKS = "SET FOREIGN_KEY_CHECKS = 0;";
