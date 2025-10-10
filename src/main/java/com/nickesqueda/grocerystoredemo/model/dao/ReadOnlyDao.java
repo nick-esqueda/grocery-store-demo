@@ -6,11 +6,11 @@ import com.nickesqueda.grocerystoredemo.model.util.HibernateUtil;
 import jakarta.persistence.NoResultException;
 import org.hibernate.Session;
 
-public class GenericReadOnlyDao<T extends BaseEntity> {
+public class ReadOnlyDao<T extends BaseEntity> {
 
   private final Class<T> entityClass;
 
-  public GenericReadOnlyDao(Class<T> entityClass) {
+  public ReadOnlyDao(Class<T> entityClass) {
     this.entityClass = entityClass;
   }
 

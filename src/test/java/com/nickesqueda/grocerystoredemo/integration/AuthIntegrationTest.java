@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.nickesqueda.grocerystoredemo.dto.UserCredentialsDto;
 import com.nickesqueda.grocerystoredemo.dto.UserDto;
-import com.nickesqueda.grocerystoredemo.model.dao.GenericDao;
-import com.nickesqueda.grocerystoredemo.model.dao.GenericReadOnlyDao;
+import com.nickesqueda.grocerystoredemo.model.dao.Dao;
+import com.nickesqueda.grocerystoredemo.model.dao.ReadOnlyDao;
 import com.nickesqueda.grocerystoredemo.model.entity.Role;
 import com.nickesqueda.grocerystoredemo.model.entity.User;
 import com.nickesqueda.grocerystoredemo.security.SessionContext;
@@ -15,7 +15,6 @@ import com.nickesqueda.grocerystoredemo.testutils.DbTestUtils;
 import com.nickesqueda.grocerystoredemo.testutils.EntityTestUtils;
 import com.nickesqueda.grocerystoredemo.util.ModelMapperUtil;
 import java.util.UUID;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,8 +25,8 @@ class AuthIntegrationTest extends BaseDataAccessTest {
 
   @BeforeAll
   static void setup() {
-    GenericDao<User> userDao = new GenericDao<>(User.class);
-    GenericReadOnlyDao<Role> roleDao = new GenericReadOnlyDao<>(Role.class);
+    Dao<User> userDao = new Dao<>(User.class);
+    ReadOnlyDao<Role> roleDao = new ReadOnlyDao<>(Role.class);
     authService = new AuthService(roleDao, userDao);
   }
 

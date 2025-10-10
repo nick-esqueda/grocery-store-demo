@@ -1,9 +1,9 @@
 package com.nickesqueda.grocerystoredemo.model.entity;
 
-import com.nickesqueda.grocerystoredemo.model.dao.DaoTestHelper;
+import com.nickesqueda.grocerystoredemo.model.dao.AbstractDaoTestHelper;
 import com.nickesqueda.grocerystoredemo.testutils.EntityTestUtils;
 
-public class PickupAppointmentTestHelper extends DaoTestHelper<PickupAppointment, PickupStatus> {
+public class PickupAppointmentTestHelper extends AbstractDaoTestHelper<PickupAppointment, PickupStatus> {
 
   public PickupAppointmentTestHelper() {
     super(PickupAppointment.class, EntityTestUtils.createRandomPickupAppointment());

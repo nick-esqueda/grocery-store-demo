@@ -1,10 +1,10 @@
 package com.nickesqueda.grocerystoredemo.model.entity;
 
-import com.nickesqueda.grocerystoredemo.model.dao.DaoTestHelper;
+import com.nickesqueda.grocerystoredemo.model.dao.AbstractDaoTestHelper;
 import com.nickesqueda.grocerystoredemo.testutils.EntityTestUtils;
 import java.time.LocalTime;
 
-public class PickupHoursTestHelper extends DaoTestHelper<PickupHours, LocalTime> {
+public class PickupHoursTestHelper extends AbstractDaoTestHelper<PickupHours, LocalTime> {
 
   public PickupHoursTestHelper() {
     super(PickupHours.class, EntityTestUtils.createRandomPickupHours());

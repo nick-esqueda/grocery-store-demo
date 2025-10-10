@@ -1,10 +1,10 @@
 package com.nickesqueda.grocerystoredemo.model.entity;
 
-import com.nickesqueda.grocerystoredemo.model.dao.DaoTestHelper;
+import com.nickesqueda.grocerystoredemo.model.dao.AbstractDaoTestHelper;
 import com.nickesqueda.grocerystoredemo.testutils.EntityTestUtils;
 import java.math.BigDecimal;
 
-public class PaymentTestHelper extends DaoTestHelper<Payment, BigDecimal> {
+public class PaymentTestHelper extends AbstractDaoTestHelper<Payment, BigDecimal> {
 
   public PaymentTestHelper() {
     super(Payment.class, EntityTestUtils.createRandomPayment());

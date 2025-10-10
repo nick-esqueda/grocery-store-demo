@@ -4,16 +4,16 @@ import com.nickesqueda.grocerystoredemo.model.entity.BaseEntity;
 import lombok.Getter;
 
 @Getter
-public abstract class DaoTestHelper<T extends BaseEntity, U> {
+public abstract class AbstractDaoTestHelper<T extends BaseEntity, U> {
 
   protected final Class<T> entityType;
   protected final T entity;
-  protected final GenericDao<T> genericDao;
+  protected final Dao<T> daoUnderTest;
 
-  public DaoTestHelper(Class<T> entityType, T entity) {
+  public AbstractDaoTestHelper(Class<T> entityType, T entity) {
     this.entityType = entityType;
     this.entity = entity;
-    this.genericDao = new GenericDao<>(entityType);
+    this.daoUnderTest = new Dao<>(entityType);
   }
 
   /**

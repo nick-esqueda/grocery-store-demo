@@ -3,9 +3,9 @@ package com.nickesqueda.grocerystoredemo.model.dao;
 import com.nickesqueda.grocerystoredemo.model.entity.BaseEntity;
 import com.nickesqueda.grocerystoredemo.model.util.HibernateUtil;
 
-public class GenericDao<T extends BaseEntity> extends GenericReadOnlyDao<T> {
+public class Dao<T extends BaseEntity> extends ReadOnlyDao<T> {
 
-  public GenericDao(Class<T> entityClass) {
+  public Dao(Class<T> entityClass) {
     super(entityClass);
   }
 

@@ -2,10 +2,10 @@ package com.nickesqueda.grocerystoredemo.service;
 
 import com.nickesqueda.grocerystoredemo.dto.UserCredentialsDto;
 import com.nickesqueda.grocerystoredemo.dto.UserDto;
-import com.nickesqueda.grocerystoredemo.exception.AuthenticationException;
+import com.nickesqueda.grocerystoredemo.exception.PasswordMismatchException;
 import com.nickesqueda.grocerystoredemo.exception.UserNotSavedException;
-import com.nickesqueda.grocerystoredemo.model.dao.GenericDao;
-import com.nickesqueda.grocerystoredemo.model.dao.GenericReadOnlyDao;
+import com.nickesqueda.grocerystoredemo.model.dao.Dao;
+import com.nickesqueda.grocerystoredemo.model.dao.ReadOnlyDao;
 import com.nickesqueda.grocerystoredemo.model.entity.Role;
 import com.nickesqueda.grocerystoredemo.model.entity.RoleName;
 import com.nickesqueda.grocerystoredemo.model.entity.User;
@@ -18,8 +18,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthService {
 
-  private final GenericReadOnlyDao<Role> roleDao;
-  private final GenericDao<User> userDao;
+  private final ReadOnlyDao<Role> roleDao;
+  private final Dao<User> userDao;
 
   public void registerUser(UserDto userDto, String rawPassword) {
     Role customerRole = roleDao.findOneByValue("name", RoleName.ROLE_CUSTOMER);
@@ -46,7 +46,7 @@ public class AuthService {
       UserDto userDto = ModelMapperUtil.map(user, UserDto.class);
       SessionContext.setSessionContext(userDto);
     } else {
-      throw new AuthenticationException("Provided password does not match stored password");
+      throw new PasswordMismatchException();
     }
   }
 

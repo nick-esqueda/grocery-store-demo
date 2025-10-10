@@ -11,7 +11,7 @@ import org.junit.jupiter.api.function.ThrowingSupplier;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class GenericDaoTest extends BaseDataAccessTest {
+class DaoTest extends BaseDataAccessTest {
 
   @ParameterizedTest
   @ValueSource(
@@ -29,30 +29,31 @@ class GenericDaoTest extends BaseDataAccessTest {
         PickupHoursAdjustmentTestHelper.class,
         PickupAppointmentTestHelper.class
       })
-  <T extends BaseEntity, U> void testSave(Class<? extends DaoTestHelper<T, U>> entityTesterClass)
+  <T extends BaseEntity, U> void testSave(
+      Class<? extends AbstractDaoTestHelper<T, U>> entityTesterClass)
       throws NoSuchMethodException,
           InvocationTargetException,
           InstantiationException,
           IllegalAccessException {
 
     // Instantiate the class passed in from the @ValueSource
-    DaoTestHelper<T, U> daoTestHelper = entityTesterClass.getDeclaredConstructor().newInstance();
+    AbstractDaoTestHelper<T, U> testHelper =
+        entityTesterClass.getDeclaredConstructor().newInstance();
 
     // ARRANGE ////////////////////////////////////////////////////////////////////////////////////
     // Extract values from the test helper
-    Class<T> type = daoTestHelper.getEntityType();
-    GenericDao<T> genericDao = daoTestHelper.getGenericDao();
-    T instance = daoTestHelper.getEntity();
+    Class<T> type = testHelper.getEntityType();
+    Dao<T> daoUnderTest = testHelper.getDaoUnderTest();
+    T instance = testHelper.getEntity();
 
     // ACT ////////////////////////////////////////////////////////////////////////////////////////
-    Executable action = () -> genericDao.save(instance);
+    Executable action = () -> daoUnderTest.save(instance);
     assertDoesNotThrow(action);
 
     // ASSERT /////////////////////////////////////////////////////////////////////////////////////
     T result = DbTestUtils.findEntityByValue(type, "id", instance.getId());
     assertNotNull(result);
-    assertEquals(
-        daoTestHelper.getExpectedAssertValue(), daoTestHelper.getActualAssertValue(result));
+    assertEquals(testHelper.getExpectedAssertValue(), testHelper.getActualAssertValue(result));
   }
 
   @ParameterizedTest
@@ -72,30 +73,30 @@ class GenericDaoTest extends BaseDataAccessTest {
         PickupAppointmentTestHelper.class
       })
   <T extends BaseEntity, U> void testFindOneByValue(
-      Class<? extends DaoTestHelper<T, U>> entityTesterClass)
+      Class<? extends AbstractDaoTestHelper<T, U>> entityTesterClass)
       throws NoSuchMethodException,
           InvocationTargetException,
           InstantiationException,
           IllegalAccessException {
 
     // Instantiate the class passed in from the @ValueSource
-    DaoTestHelper<T, U> daoTestHelper = entityTesterClass.getDeclaredConstructor().newInstance();
+    AbstractDaoTestHelper<T, U> testHelper =
+        entityTesterClass.getDeclaredConstructor().newInstance();
 
     // ARRANGE ////////////////////////////////////////////////////////////////////////////////////
     // Extract values from the test helper
-    GenericDao<T> genericDao = daoTestHelper.getGenericDao();
-    T instance = daoTestHelper.getEntity();
+    Dao<T> daoUnderTest = testHelper.getDaoUnderTest();
+    T instance = testHelper.getEntity();
 
     DbTestUtils.persistEntity(instance);
 
     // ACT ////////////////////////////////////////////////////////////////////////////////////////
-    ThrowingSupplier<T> action = () -> genericDao.findOneByValue("id", instance.getId());
+    ThrowingSupplier<T> action = () -> daoUnderTest.findOneByValue("id", instance.getId());
     T result = assertDoesNotThrow(action);
 
     // ASSERT /////////////////////////////////////////////////////////////////////////////////////
     assertNotNull(result);
-    assertEquals(
-        daoTestHelper.getExpectedAssertValue(), daoTestHelper.getActualAssertValue(result));
+    assertEquals(testHelper.getExpectedAssertValue(), testHelper.getActualAssertValue(result));
   }
 
   @ParameterizedTest
@@ -114,33 +115,34 @@ class GenericDaoTest extends BaseDataAccessTest {
         PickupHoursAdjustmentTestHelper.class,
         PickupAppointmentTestHelper.class
       })
-  <T extends BaseEntity, U> void testUpdate(Class<? extends DaoTestHelper<T, U>> entityTesterClass)
+  <T extends BaseEntity, U> void testUpdate(
+      Class<? extends AbstractDaoTestHelper<T, U>> entityTesterClass)
       throws NoSuchMethodException,
           InvocationTargetException,
           InstantiationException,
           IllegalAccessException {
 
     // Instantiate the class passed in from the @ValueSource
-    DaoTestHelper<T, U> daoTestHelper = entityTesterClass.getDeclaredConstructor().newInstance();
+    AbstractDaoTestHelper<T, U> testHelper =
+        entityTesterClass.getDeclaredConstructor().newInstance();
 
     // ARRANGE ////////////////////////////////////////////////////////////////////////////////////
     // Extract values from the test helper
-    Class<T> type = daoTestHelper.getEntityType();
-    GenericDao<T> genericDao = daoTestHelper.getGenericDao();
-    T instance = daoTestHelper.getEntity();
+    Class<T> type = testHelper.getEntityType();
+    Dao<T> daoUnderTest = testHelper.getDaoUnderTest();
+    T instance = testHelper.getEntity();
 
     DbTestUtils.persistEntity(instance);
 
     // ACT ////////////////////////////////////////////////////////////////////////////////////////
-    daoTestHelper.runEntityUpdate();
-    Executable action = () -> genericDao.update(instance);
+    testHelper.runEntityUpdate();
+    Executable action = () -> daoUnderTest.update(instance);
     assertDoesNotThrow(action);
 
     // ASSERT /////////////////////////////////////////////////////////////////////////////////////
     T result = DbTestUtils.findEntityByValue(type, "id", instance.getId());
     assertNotNull(result);
-    assertEquals(
-        daoTestHelper.getExpectedAssertValue(), daoTestHelper.getActualAssertValue(result));
+    assertEquals(testHelper.getExpectedAssertValue(), testHelper.getActualAssertValue(result));
   }
 
   @ParameterizedTest
@@ -159,25 +161,27 @@ class GenericDaoTest extends BaseDataAccessTest {
         PickupHoursAdjustmentTestHelper.class,
         PickupAppointmentTestHelper.class
       })
-  <T extends BaseEntity, U> void testDelete(Class<? extends DaoTestHelper<T, U>> entityTesterClass)
+  <T extends BaseEntity, U> void testDelete(
+      Class<? extends AbstractDaoTestHelper<T, U>> entityTesterClass)
       throws NoSuchMethodException,
           InvocationTargetException,
           InstantiationException,
           IllegalAccessException {
 
     // Instantiate the class passed in from the @ValueSource
-    DaoTestHelper<T, U> daoTestHelper = entityTesterClass.getDeclaredConstructor().newInstance();
+    AbstractDaoTestHelper<T, U> testHelper =
+        entityTesterClass.getDeclaredConstructor().newInstance();
 
     // ARRANGE ////////////////////////////////////////////////////////////////////////////////////
     // Extract values from the test helper
-    Class<T> type = daoTestHelper.getEntityType();
-    GenericDao<T> genericDao = daoTestHelper.getGenericDao();
-    T instance = daoTestHelper.getEntity();
+    Class<T> type = testHelper.getEntityType();
+    Dao<T> daoUnderTest = testHelper.getDaoUnderTest();
+    T instance = testHelper.getEntity();
 
     DbTestUtils.persistEntity(instance);
 
     // ACT ////////////////////////////////////////////////////////////////////////////////////////
-    Executable action = () -> genericDao.delete(instance);
+    Executable action = () -> daoUnderTest.delete(instance);
     assertDoesNotThrow(action);
 
     // ASSERT /////////////////////////////////////////////////////////////////////////////////////

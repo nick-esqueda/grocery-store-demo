@@ -1,9 +1,9 @@
 package com.nickesqueda.grocerystoredemo.model.entity;
 
-import com.nickesqueda.grocerystoredemo.model.dao.DaoTestHelper;
+import com.nickesqueda.grocerystoredemo.model.dao.AbstractDaoTestHelper;
 import com.nickesqueda.grocerystoredemo.testutils.EntityTestUtils;
 
-public class OrderItemTestHelper extends DaoTestHelper<OrderItem, Integer> {
+public class OrderItemTestHelper extends AbstractDaoTestHelper<OrderItem, Integer> {
 
   public OrderItemTestHelper() {
     super(OrderItem.class, EntityTestUtils.createRandomOrderItem());
