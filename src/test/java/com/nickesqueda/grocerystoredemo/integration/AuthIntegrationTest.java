@@ -1,0 +1,87 @@
+package com.nickesqueda.grocerystoredemo.integration;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.nickesqueda.grocerystoredemo.dto.UserCredentialsDto;
+import com.nickesqueda.grocerystoredemo.dto.UserDto;
+import com.nickesqueda.grocerystoredemo.model.dao.GenericDao;
+import com.nickesqueda.grocerystoredemo.model.dao.GenericReadOnlyDao;
+import com.nickesqueda.grocerystoredemo.model.entity.Role;
+import com.nickesqueda.grocerystoredemo.model.entity.User;
+import com.nickesqueda.grocerystoredemo.security.SessionContext;
+import com.nickesqueda.grocerystoredemo.service.AuthService;
+import com.nickesqueda.grocerystoredemo.testutils.BaseDataAccessTest;
+import com.nickesqueda.grocerystoredemo.testutils.DbTestUtils;
+import com.nickesqueda.grocerystoredemo.testutils.EntityTestUtils;
+import com.nickesqueda.grocerystoredemo.util.ModelMapperUtil;
+import java.util.UUID;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+class AuthIntegrationTest extends BaseDataAccessTest {
+
+  private static AuthService authService;
+
+  @BeforeAll
+  static void setup() {
+    GenericDao<User> userDao = new GenericDao<>(User.class);
+    GenericReadOnlyDao<Role> roleDao = new GenericReadOnlyDao<>(Role.class);
+    authService = new AuthService(roleDao, userDao);
+  }
+
+  @AfterEach
+  void cleanUp() {
+    SessionContext.clearSession();
+  }
+
+  @Test
+  void registrationTest() {
+    assertFalse(SessionContext.isSessionActive());
+    assertNull(SessionContext.getSessionUser());
+
+    UserDto userDto = EntityTestUtils.createRandomUserDto();
+    String rawPassword = UUID.randomUUID().toString();
+
+    authService.registerUser(userDto, rawPassword);
+
+    assertTrue(SessionContext.isSessionActive());
+    assertNotNull(SessionContext.getSessionUser());
+    assertEquals(userDto, SessionContext.getSessionUser());
+  }
+
+  @Test
+  void authenticationTest() {
+    String rawPassword = UUID.randomUUID().toString();
+    User testUser = EntityTestUtils.createRandomUser(rawPassword);
+    DbTestUtils.persistEntity(testUser);
+
+    assertFalse(SessionContext.isSessionActive());
+    assertNull(SessionContext.getSessionUser());
+
+    var credentials = new UserCredentialsDto(testUser.getUsername(), rawPassword);
+    authService.authenticateUser(credentials);
+
+    assertTrue(SessionContext.isSessionActive());
+    assertNotNull(SessionContext.getSessionUser());
+  }
+
+  @Test
+  void logoutTest() {
+    String rawPassword = UUID.randomUUID().toString();
+    User user = EntityTestUtils.createRandomUser(rawPassword);
+    DbTestUtils.persistEntity(user);
+    UserDto userDto = ModelMapperUtil.map(user, UserDto.class);
+
+    SessionContext.setSessionContext(userDto);
+
+    assertTrue(SessionContext.isSessionActive());
+    assertNotNull(SessionContext.getSessionUser());
+
+    authService.logOut();
+
+    assertFalse(SessionContext.isSessionActive());
+    assertNull(SessionContext.getSessionUser());
+  }
+}

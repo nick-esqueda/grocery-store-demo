@@ -1,6 +1,7 @@
 package com.nickesqueda.grocerystoredemo.testutils;
 
 import com.github.javafaker.Faker;
+import com.nickesqueda.grocerystoredemo.dto.UserDto;
 import com.nickesqueda.grocerystoredemo.model.entity.CartItem;
 import com.nickesqueda.grocerystoredemo.model.entity.Category;
 import com.nickesqueda.grocerystoredemo.model.entity.InventoryItem;
@@ -17,6 +18,7 @@ import com.nickesqueda.grocerystoredemo.model.entity.Role;
 import com.nickesqueda.grocerystoredemo.model.entity.RoleName;
 import com.nickesqueda.grocerystoredemo.model.entity.Store;
 import com.nickesqueda.grocerystoredemo.model.entity.User;
+import com.nickesqueda.grocerystoredemo.security.PasswordHasher;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -40,12 +42,40 @@ public final class EntityTestUtils {
 
     return User.builder()
         .username(UUID.randomUUID().toString())
+        .password(PasswordHasher.hash(UUID.randomUUID().toString()))
         .firstName(FAKER.name().firstName())
         .lastName(FAKER.name().lastName())
         .address(FAKER.address().fullAddress())
         .email(FAKER.internet().emailAddress())
         .phoneNumber(FAKER.phoneNumber().phoneNumber())
         .roles(Set.of(customerRole))
+        .build();
+  }
+
+  public static User createRandomUser(String password) {
+    Role customerRole = DbTestUtils.findEntityByValue(Role.class, "name", RoleName.ROLE_CUSTOMER);
+
+    return User.builder()
+        .username(UUID.randomUUID().toString())
+        .password(PasswordHasher.hash(password))
+        .firstName(FAKER.name().firstName())
+        .lastName(FAKER.name().lastName())
+        .address(FAKER.address().fullAddress())
+        .email(FAKER.internet().emailAddress())
+        .phoneNumber(FAKER.phoneNumber().phoneNumber())
+        .roles(Set.of(customerRole))
+        .build();
+  }
+
+  public static UserDto createRandomUserDto() {
+    return UserDto.builder()
+        .username(UUID.randomUUID().toString())
+        .firstName(FAKER.name().firstName())
+        .lastName(FAKER.name().lastName())
+        .address(FAKER.address().fullAddress())
+        .email(FAKER.internet().emailAddress())
+        .phoneNumber(FAKER.phoneNumber().phoneNumber())
+        .roles(Set.of(RoleName.ROLE_CUSTOMER))
         .build();
   }
 

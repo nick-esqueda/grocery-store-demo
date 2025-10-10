@@ -1,17 +1,17 @@
 package com.nickesqueda.grocerystoredemo.model.entity;
 
 import jakarta.persistence.*;
-import java.util.HashSet;
 import java.util.Set;
 import lombok.*;
+import org.hibernate.annotations.Immutable;
 
 @Getter
-@Setter
 @ToString(callSuper = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Immutable
 @Table(name = "roles")
 public class Role extends BaseEntity {
 
@@ -19,6 +19,7 @@ public class Role extends BaseEntity {
   @Column(name = "name", length = 50, nullable = false, unique = true)
   private RoleName name;
 
+  @ToString.Exclude
   @ManyToMany(mappedBy = "roles")
-  private Set<User> users = new HashSet<>();
+  private Set<User> users;
 }

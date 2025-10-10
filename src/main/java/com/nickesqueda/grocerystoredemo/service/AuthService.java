@@ -1,0 +1,56 @@
+package com.nickesqueda.grocerystoredemo.service;
+
+import com.nickesqueda.grocerystoredemo.dto.UserCredentialsDto;
+import com.nickesqueda.grocerystoredemo.dto.UserDto;
+import com.nickesqueda.grocerystoredemo.exception.AuthenticationException;
+import com.nickesqueda.grocerystoredemo.exception.UserNotSavedException;
+import com.nickesqueda.grocerystoredemo.model.dao.GenericDao;
+import com.nickesqueda.grocerystoredemo.model.dao.GenericReadOnlyDao;
+import com.nickesqueda.grocerystoredemo.model.entity.Role;
+import com.nickesqueda.grocerystoredemo.model.entity.RoleName;
+import com.nickesqueda.grocerystoredemo.model.entity.User;
+import com.nickesqueda.grocerystoredemo.security.PasswordHasher;
+import com.nickesqueda.grocerystoredemo.security.SessionContext;
+import com.nickesqueda.grocerystoredemo.util.ModelMapperUtil;
+import java.util.Set;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class AuthService {
+
+  private final GenericReadOnlyDao<Role> roleDao;
+  private final GenericDao<User> userDao;
+
+  public void registerUser(UserDto userDto, String rawPassword) {
+    Role customerRole = roleDao.findOneByValue("name", RoleName.ROLE_CUSTOMER);
+    User user = ModelMapperUtil.map(userDto, User.class);
+    user.setRoles(Set.of(customerRole));
+    user.setPassword(PasswordHasher.hash(rawPassword));
+
+    try {
+      userDao.save(user);
+    } catch (RuntimeException ex) {
+      throw new UserNotSavedException(ex);
+    }
+
+    SessionContext.setSessionContext(userDto);
+  }
+
+  public void authenticateUser(UserCredentialsDto userCredentials) {
+    String username = userCredentials.username();
+    String rawPassword = userCredentials.rawPassword();
+
+    User user = userDao.findOneByValue("username", username);
+
+    if (PasswordHasher.compare(rawPassword, user.getPassword())) {
+      UserDto userDto = ModelMapperUtil.map(user, UserDto.class);
+      SessionContext.setSessionContext(userDto);
+    } else {
+      throw new AuthenticationException("Provided password does not match stored password");
+    }
+  }
+
+  public void logOut() {
+    SessionContext.clearSession();
+  }
+}
