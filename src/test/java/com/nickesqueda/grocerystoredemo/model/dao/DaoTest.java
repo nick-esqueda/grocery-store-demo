@@ -70,7 +70,8 @@ class DaoTest extends BaseDataAccessTest {
         InventoryItemTestHelper.class,
         PickupHoursTestHelper.class,
         PickupHoursAdjustmentTestHelper.class,
-        PickupAppointmentTestHelper.class
+        PickupAppointmentTestHelper.class,
+        RoleTestHelper.class
       })
   <T extends BaseEntity, U> void testFindOneByValue(
       Class<? extends AbstractDaoTestHelper<T, U>> entityTesterClass)
