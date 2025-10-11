@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     last_name VARCHAR(255),
     address VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    phone_number VARCHAR(20),
+    phone_number VARCHAR(15),
     recent_payment_method_token VARCHAR(255),
     created_at DATETIME(6) NOT NULL,
     updated_at DATETIME(6),
