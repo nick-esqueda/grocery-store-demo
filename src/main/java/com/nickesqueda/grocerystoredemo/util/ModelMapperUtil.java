@@ -23,7 +23,11 @@ public final class ModelMapperUtil {
 
   private ModelMapperUtil() {}
 
-  public static <T, U> U map(T source, Class<U> destClass) {
-    return modelMapper.map(source, destClass);
+  public static <T, U> U map(T src, Class<U> dstClass) {
+    return modelMapper.map(src, dstClass);
+  }
+
+  public static <T, U> void map(T src, U dst) {
+    modelMapper.map(src, dst);
   }
 }

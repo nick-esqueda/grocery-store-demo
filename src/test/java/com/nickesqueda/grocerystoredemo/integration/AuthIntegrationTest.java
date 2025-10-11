@@ -18,6 +18,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 class AuthIntegrationTest extends BaseDataAccessTest {
 
@@ -43,7 +44,8 @@ class AuthIntegrationTest extends BaseDataAccessTest {
     UserDto userDto = EntityTestUtils.createRandomUserDto();
     String rawPassword = UUID.randomUUID().toString();
 
-    authService.registerUser(userDto, rawPassword);
+    Executable action = () -> authService.registerUser(userDto, rawPassword);
+    assertDoesNotThrow(action);
 
     assertTrue(SessionContext.isSessionActive());
     assertNotNull(SessionContext.getSessionUser());
@@ -60,7 +62,8 @@ class AuthIntegrationTest extends BaseDataAccessTest {
     assertNull(SessionContext.getSessionUser());
 
     var credentials = new UserCredentialsDto(testUser.getUsername(), rawPassword);
-    authService.authenticateUser(credentials);
+    Executable action = () -> authService.authenticateUser(credentials);
+    assertDoesNotThrow(action);
 
     assertTrue(SessionContext.isSessionActive());
     assertNotNull(SessionContext.getSessionUser());
@@ -78,7 +81,8 @@ class AuthIntegrationTest extends BaseDataAccessTest {
     assertTrue(SessionContext.isSessionActive());
     assertNotNull(SessionContext.getSessionUser());
 
-    authService.logOut();
+    Executable action = () -> authService.logOut();
+    assertDoesNotThrow(action);
 
     assertFalse(SessionContext.isSessionActive());
     assertNull(SessionContext.getSessionUser());

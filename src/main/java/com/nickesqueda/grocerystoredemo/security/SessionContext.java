@@ -18,6 +18,17 @@ public final class SessionContext {
     sessionUser = userDto;
   }
 
+  public static void updateSessionContext(UserDto userDto) {
+    if (!isSessionActive) {
+      throw new IllegalStateException("Session is not active - cannot update session context");
+    }
+    if (!userDto.getId().equals(sessionUser.getId())) {
+      throw new IllegalArgumentException("Cannot update session - input user ID does not match session user ID");
+    }
+
+    sessionUser = userDto;
+  }
+
   public static void clearSession() {
     isSessionActive = false;
     sessionUser = null;
