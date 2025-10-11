@@ -20,7 +20,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
-class AuthIntegrationTest extends BaseDataAccessTest {
+class AuthServiceIntegrationTest extends BaseDataAccessTest {
 
   private static AuthService authService;
 

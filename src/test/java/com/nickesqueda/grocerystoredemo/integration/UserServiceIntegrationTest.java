@@ -24,7 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
-public class UserIntegrationTest extends BaseDataAccessTest {
+public class UserServiceIntegrationTest extends BaseDataAccessTest {
 
   private static UserService userService;
   private UserDto userDto;
