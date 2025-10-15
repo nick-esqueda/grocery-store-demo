@@ -1,9 +1,10 @@
 package com.nickesqueda.grocerystoredemo.util;
 
+import com.nickesqueda.grocerystoredemo.dto.CategoryWithProductsDto;
+import com.nickesqueda.grocerystoredemo.dto.ProductDto;
 import com.nickesqueda.grocerystoredemo.dto.UserDto;
-import com.nickesqueda.grocerystoredemo.model.entity.Role;
-import com.nickesqueda.grocerystoredemo.model.entity.RoleName;
-import com.nickesqueda.grocerystoredemo.model.entity.User;
+import com.nickesqueda.grocerystoredemo.model.entity.*;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.modelmapper.Converter;
@@ -14,11 +15,23 @@ public final class ModelMapperUtil {
   private static final ModelMapper modelMapper = new ModelMapper();
 
   static {
-    var typeMap = modelMapper.createTypeMap(User.class, UserDto.class);
+    var userTypeMap = modelMapper.createTypeMap(User.class, UserDto.class);
     Converter<Set<Role>, Set<RoleName>> rolesConverter =
         context -> context.getSource().stream().map(Role::getName).collect(Collectors.toSet());
-    typeMap.addMappings(
+    userTypeMap.addMappings(
         mapper -> mapper.using(rolesConverter).map(User::getRoles, UserDto::setRoles));
+
+    var categoryTypeMap = modelMapper.createTypeMap(Category.class, CategoryWithProductsDto.class);
+    Converter<List<Product>, List<ProductDto>> productListConverter =
+        context ->
+            context.getSource().stream()
+                .map(productEntity -> ModelMapperUtil.map(productEntity, ProductDto.class))
+                .toList();
+    categoryTypeMap.addMappings(
+        mapper ->
+            mapper
+                .using(productListConverter)
+                .map(Category::getProducts, CategoryWithProductsDto::setProducts));
   }
 
   private ModelMapperUtil() {}

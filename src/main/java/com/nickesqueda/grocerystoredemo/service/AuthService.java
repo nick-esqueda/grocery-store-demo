@@ -33,12 +33,13 @@ public class AuthService {
       throw new UserNotSavedException(ex);
     }
 
-    SessionContext.setSessionContext(userDto);
+    UserDto newUserDto = ModelMapperUtil.map(user, UserDto.class);
+    SessionContext.setSessionContext(newUserDto);
   }
 
   public void authenticateUser(UserCredentialsDto userCredentials) {
-    String username = userCredentials.username();
-    String rawPassword = userCredentials.rawPassword();
+    String username = userCredentials.getUsername();
+    String rawPassword = userCredentials.getRawPassword();
 
     User user = userDao.findOneByValue("username", username);
 

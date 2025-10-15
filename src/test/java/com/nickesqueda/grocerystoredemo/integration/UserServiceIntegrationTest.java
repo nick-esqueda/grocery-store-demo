@@ -30,7 +30,7 @@ public class UserServiceIntegrationTest extends BaseDataAccessTest {
   private UserDto userDto;
 
   @BeforeAll
-  static void setup() {
+  static void setUp() {
     Dao<User> userDao = new Dao<>(User.class);
     ReadOnlyDao<Role> roleDao = new ReadOnlyDao<>(Role.class);
     var authService = new AuthService(roleDao, userDao);
@@ -81,7 +81,7 @@ public class UserServiceIntegrationTest extends BaseDataAccessTest {
   }
 
   @Test
-  void updateUserData_ShouldThrowException_WhenSessionInactive() {
+  void updateUserData_ShouldThrow_WhenSessionInactive() {
     // Clear session
     SessionContext.clearSession();
 
@@ -99,7 +99,7 @@ public class UserServiceIntegrationTest extends BaseDataAccessTest {
   }
 
   @Test
-  void updateUserData_ShouldThrowException_GivenMismatchedUser() {
+  void updateUserData_ShouldThrow_GivenMismatchedUser() {
     // Create another user to act as a fraud (original user will still be in SessionContext)
     User badUser = EntityTestUtils.createRandomUser();
     DbTestUtils.persistEntity(badUser);

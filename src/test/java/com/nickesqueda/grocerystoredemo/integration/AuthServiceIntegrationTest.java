@@ -47,9 +47,11 @@ class AuthServiceIntegrationTest extends BaseDataAccessTest {
     Executable action = () -> authService.registerUser(userDto, rawPassword);
     assertDoesNotThrow(action);
 
+    UserDto sessionUser = SessionContext.getSessionUser();
     assertTrue(SessionContext.isSessionActive());
-    assertNotNull(SessionContext.getSessionUser());
-    assertEquals(userDto, SessionContext.getSessionUser());
+    assertNotNull(sessionUser);
+    assertNotNull(sessionUser.getId());
+    assertEquals(userDto.getUsername(), sessionUser.getUsername());
   }
 
   @Test

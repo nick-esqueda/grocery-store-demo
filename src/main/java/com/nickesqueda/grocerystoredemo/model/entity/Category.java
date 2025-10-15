@@ -1,6 +1,7 @@
 package com.nickesqueda.grocerystoredemo.model.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.*;
 
 @Getter
@@ -18,4 +19,8 @@ public class Category extends AuditableEntity {
 
   @Column(nullable = false)
   private String description;
+
+  @ToString.Exclude
+  @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+  private List<Product> products;
 }

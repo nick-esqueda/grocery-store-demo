@@ -37,6 +37,21 @@ public final class EntityTestUtils {
 
   public static final Faker FAKER = new Faker();
 
+  public static User createRandomAdminUser() {
+    Role adminRole = DbTestUtils.findEntityByValue(Role.class, "name", RoleName.ROLE_ADMIN);
+
+    return User.builder()
+        .username(UUID.randomUUID().toString())
+        .password(PasswordHasher.hash(UUID.randomUUID().toString()))
+        .firstName(FAKER.name().firstName())
+        .lastName(FAKER.name().lastName())
+        .address(FAKER.address().fullAddress())
+        .email(FAKER.internet().emailAddress())
+        .phoneNumber(FAKER.phoneNumber().phoneNumber())
+        .roles(Set.of(adminRole))
+        .build();
+  }
+
   public static User createRandomUser() {
     Role customerRole = DbTestUtils.findEntityByValue(Role.class, "name", RoleName.ROLE_CUSTOMER);
 
@@ -115,6 +130,17 @@ public final class EntityTestUtils {
   public static Product createRandomProduct() {
     Category category = createRandomCategory();
     DbTestUtils.persistEntity(category);
+
+    return Product.builder()
+        .category(category)
+        .name(FAKER.commerce().productName())
+        .description(FAKER.lorem().sentence())
+        .price(BigDecimal.valueOf(100, 2))
+        .build();
+  }
+
+  public static Product createRandomProduct(Integer categoryId) {
+    Category category = DbTestUtils.findEntityByValue(Category.class, "id", categoryId);
 
     return Product.builder()
         .category(category)
