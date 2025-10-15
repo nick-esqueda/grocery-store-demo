@@ -2,13 +2,9 @@ package com.nickesqueda.grocerystoredemo.service;
 
 import com.nickesqueda.grocerystoredemo.dto.CategoryDto;
 import com.nickesqueda.grocerystoredemo.dto.CategoryWithProductsDto;
-import com.nickesqueda.grocerystoredemo.dto.UserDto;
-import com.nickesqueda.grocerystoredemo.exception.UnauthenticatedException;
-import com.nickesqueda.grocerystoredemo.exception.UnauthorizedException;
 import com.nickesqueda.grocerystoredemo.model.dao.Dao;
 import com.nickesqueda.grocerystoredemo.model.entity.Category;
-import com.nickesqueda.grocerystoredemo.model.entity.RoleName;
-import com.nickesqueda.grocerystoredemo.security.SessionContext;
+import com.nickesqueda.grocerystoredemo.security.AuthValidator;
 import com.nickesqueda.grocerystoredemo.util.ModelMapperUtil;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -36,14 +32,7 @@ public class CategoryService {
   }
 
   public CategoryDto createCategory(CategoryDto categoryDto) {
-    if (!SessionContext.isSessionActive()) {
-      throw new UnauthenticatedException();
-    }
-
-    UserDto sessionUser = SessionContext.getSessionUser();
-    if (!sessionUser.getRoles().contains(RoleName.ROLE_ADMIN)) {
-      throw new UnauthorizedException(sessionUser.getId(), RoleName.ROLE_ADMIN);
-    }
+    AuthValidator.requireAdminRole();
 
     Category categoryEntity = ModelMapperUtil.map(categoryDto, Category.class);
     categoryDao.save(categoryEntity);
@@ -52,14 +41,7 @@ public class CategoryService {
   }
 
   public void updateCategory(CategoryDto categoryDto) {
-    if (!SessionContext.isSessionActive()) {
-      throw new UnauthenticatedException();
-    }
-
-    UserDto sessionUser = SessionContext.getSessionUser();
-    if (!sessionUser.getRoles().contains(RoleName.ROLE_ADMIN)) {
-      throw new UnauthorizedException(sessionUser.getId(), RoleName.ROLE_ADMIN);
-    }
+    AuthValidator.requireAdminRole();
 
     Category category = categoryDao.findOneByValue("id", categoryDto.getId());
     ModelMapperUtil.map(categoryDto, category);
@@ -67,17 +49,9 @@ public class CategoryService {
   }
 
   public void deleteCategory(Integer id) {
-    if (!SessionContext.isSessionActive()) {
-      throw new UnauthenticatedException();
-    }
-
-    UserDto sessionUser = SessionContext.getSessionUser();
-    if (!sessionUser.getRoles().contains(RoleName.ROLE_ADMIN)) {
-      throw new UnauthorizedException(sessionUser.getId(), RoleName.ROLE_ADMIN);
-    }
+    AuthValidator.requireAdminRole();
 
     Category category = categoryDao.findOneByValue("id", id);
-
     categoryDao.delete(category);
   }
 }
