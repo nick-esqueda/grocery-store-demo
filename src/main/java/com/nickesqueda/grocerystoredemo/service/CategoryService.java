@@ -20,7 +20,7 @@ public class CategoryService {
   }
 
   public CategoryWithProductsDto getCategoryWithProducts(Integer id) {
-    Category category = categoryDao.findOneByValueWithChildren("id", id, "products");
+    Category category = categoryDao.findOneByValueWithRelations("id", id, "products");
     return ModelMapperUtil.map(category, CategoryWithProductsDto.class);
   }
 

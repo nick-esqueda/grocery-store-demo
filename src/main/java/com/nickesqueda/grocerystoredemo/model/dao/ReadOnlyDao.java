@@ -25,10 +25,10 @@ public class ReadOnlyDao<T extends BaseEntity> {
     }
   }
 
-  public <U> T findOneByValueWithChildren(String fieldName, U value, String childFieldName) {
+  public <U> T findOneByValueWithRelations(String fieldName, U value, String relationName) {
     String query =
         "FROM %s e LEFT JOIN FETCH e.%s r WHERE e.%s = :value"
-            .formatted(entityClass.getSimpleName(), childFieldName, fieldName);
+            .formatted(entityClass.getSimpleName(), relationName, fieldName);
 
     try (Session session = HibernateUtil.getSessionFactory().openSession()) {
       return session.createQuery(query, entityClass).setParameter("value", value).getSingleResult();
@@ -41,6 +41,17 @@ public class ReadOnlyDao<T extends BaseEntity> {
     String query = "FROM " + entityClass.getSimpleName();
     try (Session session = HibernateUtil.getSessionFactory().openSession()) {
       return session.createQuery(query, entityClass).getResultList();
+    }
+  }
+
+  public <U> List<T> findAllByValue(String fieldName, U value) {
+    String query =
+        "FROM %s e WHERE e.%s = :value".formatted(entityClass.getSimpleName(), fieldName);
+
+    try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+      return session.createQuery(query, entityClass).setParameter("value", value).getResultList();
+    } catch (NoResultException ex) {
+      throw new EntityNotFoundException(entityClass, value.toString(), ex);
     }
   }
 }

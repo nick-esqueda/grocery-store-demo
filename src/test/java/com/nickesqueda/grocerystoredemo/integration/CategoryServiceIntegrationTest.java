@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.nickesqueda.grocerystoredemo.dto.CategoryDto;
 import com.nickesqueda.grocerystoredemo.dto.CategoryWithProductsDto;
+import com.nickesqueda.grocerystoredemo.dto.ProductDto;
 import com.nickesqueda.grocerystoredemo.dto.UserDto;
 import com.nickesqueda.grocerystoredemo.exception.UnauthorizedException;
 import com.nickesqueda.grocerystoredemo.model.dao.Dao;
@@ -58,7 +59,7 @@ public class CategoryServiceIntegrationTest extends BaseDataAccessTest {
   }
 
   @AfterEach
-  void tearDown() {
+  void clearSession() {
     SessionContext.clearSession();
   }
 
@@ -79,13 +80,22 @@ public class CategoryServiceIntegrationTest extends BaseDataAccessTest {
     DbTestUtils.persistEntity(product2);
     DbTestUtils.persistEntity(product3);
 
+    ProductDto product1Dto = ModelMapperUtil.map(product1, ProductDto.class);
+    ProductDto product2Dto = ModelMapperUtil.map(product2, ProductDto.class);
+    ProductDto product3Dto = ModelMapperUtil.map(product3, ProductDto.class);
+
+    // Run the test
     ThrowingSupplier<CategoryWithProductsDto> action =
         () -> categoryService.getCategoryWithProducts(testCategoryDto.getId());
     CategoryWithProductsDto result = assertDoesNotThrow(action);
 
+    // Assert the product list within the category contains the expected elements
     assertNotNull(result);
     assertNotNull(result.getProducts());
     assertEquals(3, result.getProducts().size());
+    assertTrue(result.getProducts().stream().anyMatch(product -> product.equals(product1Dto)));
+    assertTrue(result.getProducts().stream().anyMatch(product -> product.equals(product2Dto)));
+    assertTrue(result.getProducts().stream().anyMatch(product -> product.equals(product3Dto)));
   }
 
   @Test
