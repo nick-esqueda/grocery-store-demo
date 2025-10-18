@@ -5,11 +5,13 @@ import com.nickesqueda.grocerystoredemo.model.entity.BaseEntity;
 import com.nickesqueda.grocerystoredemo.model.util.HibernateUtil;
 import jakarta.persistence.NoResultException;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 
+@Slf4j
 public class ReadOnlyDao<T extends BaseEntity> {
 
-  private final Class<T> entityClass;
+  protected final Class<T> entityClass;
 
   public ReadOnlyDao(Class<T> entityClass) {
     this.entityClass = entityClass;
@@ -21,7 +23,13 @@ public class ReadOnlyDao<T extends BaseEntity> {
     try (Session session = HibernateUtil.getSessionFactory().openSession()) {
       return session.createQuery(query, entityClass).setParameter("value", value).getSingleResult();
     } catch (NoResultException ex) {
-      throw new EntityNotFoundException(entityClass, value.toString(), ex);
+      log.error(
+          "{} was not found in the database. Identifier: {}={} | Exception: ",
+          entityClass.getSimpleName(),
+          fieldName,
+          value,
+          ex);
+      throw new EntityNotFoundException(entityClass, ex);
     }
   }
 
@@ -33,7 +41,13 @@ public class ReadOnlyDao<T extends BaseEntity> {
     try (Session session = HibernateUtil.getSessionFactory().openSession()) {
       return session.createQuery(query, entityClass).setParameter("value", value).getSingleResult();
     } catch (NoResultException ex) {
-      throw new EntityNotFoundException(entityClass, value.toString(), ex);
+      log.error(
+          "{} was not found in the database. Identifier: {}={} | Exception: ",
+          entityClass.getSimpleName(),
+          fieldName,
+          value,
+          ex);
+      throw new EntityNotFoundException(entityClass, ex);
     }
   }
 
@@ -47,11 +61,8 @@ public class ReadOnlyDao<T extends BaseEntity> {
   public <U> List<T> findAllByValue(String fieldName, U value) {
     String query =
         "FROM %s e WHERE e.%s = :value".formatted(entityClass.getSimpleName(), fieldName);
-
     try (Session session = HibernateUtil.getSessionFactory().openSession()) {
       return session.createQuery(query, entityClass).setParameter("value", value).getResultList();
-    } catch (NoResultException ex) {
-      throw new EntityNotFoundException(entityClass, value.toString(), ex);
     }
   }
 }

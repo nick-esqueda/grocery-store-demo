@@ -2,8 +2,8 @@ package com.nickesqueda.grocerystoredemo.service;
 
 import com.nickesqueda.grocerystoredemo.dto.UserCredentialsDto;
 import com.nickesqueda.grocerystoredemo.dto.UserDto;
+import com.nickesqueda.grocerystoredemo.exception.EntityNotSavedException;
 import com.nickesqueda.grocerystoredemo.exception.PasswordMismatchException;
-import com.nickesqueda.grocerystoredemo.exception.UserNotSavedException;
 import com.nickesqueda.grocerystoredemo.model.dao.Dao;
 import com.nickesqueda.grocerystoredemo.model.dao.ReadOnlyDao;
 import com.nickesqueda.grocerystoredemo.model.entity.Role;
@@ -27,11 +27,7 @@ public class AuthService {
     user.setRoles(Set.of(customerRole));
     user.setPassword(PasswordHasher.hash(rawPassword));
 
-    try {
-      userDao.save(user);
-    } catch (RuntimeException ex) {
-      throw new UserNotSavedException(ex);
-    }
+    userDao.save(user);
 
     UserDto newUserDto = ModelMapperUtil.map(user, UserDto.class);
     SessionContext.setSessionContext(newUserDto);

@@ -16,6 +16,7 @@ public class User extends AuditableEntity {
   @Column(name = "username", nullable = false, unique = true)
   private String username;
 
+  @ToString.Exclude
   @Column(name = "password", nullable = false)
   private String password;
 

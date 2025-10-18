@@ -122,7 +122,7 @@ public final class EntityTestUtils {
 
   public static Category createRandomCategory() {
     return Category.builder()
-        .name(FAKER.commerce().department())
+        .name(FAKER.commerce().department() + "-" + FAKER.number().digits(10))
         .description(FAKER.lorem().sentence())
         .build();
   }
@@ -133,7 +133,7 @@ public final class EntityTestUtils {
 
     return Product.builder()
         .category(category)
-        .name(FAKER.commerce().productName())
+        .name(FAKER.commerce().productName() + "-" + FAKER.number().digits(10))
         .description(FAKER.lorem().sentence())
         .price(BigDecimal.valueOf(100, 2))
         .build();
@@ -144,7 +144,7 @@ public final class EntityTestUtils {
 
     return Product.builder()
         .category(category)
-        .name(FAKER.commerce().productName())
+        .name(FAKER.commerce().productName() + "-" + FAKER.number().digits(10))
         .description(FAKER.lorem().sentence())
         .price(BigDecimal.valueOf(100, 2))
         .build();
