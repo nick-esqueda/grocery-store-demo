@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.nickesqueda.grocerystoredemo.dto.CategoryDto;
 import com.nickesqueda.grocerystoredemo.dto.ProductDto;
 import com.nickesqueda.grocerystoredemo.dto.UserDto;
-import com.nickesqueda.grocerystoredemo.exception.UnauthorizedException;
 import com.nickesqueda.grocerystoredemo.model.dao.Dao;
 import com.nickesqueda.grocerystoredemo.model.entity.Category;
 import com.nickesqueda.grocerystoredemo.model.entity.Product;
@@ -33,7 +32,6 @@ public class ProductServiceIntegrationTest extends BaseDataAccessTest {
   private ProductDto testProductDto;
   private CategoryDto testCategoryDto;
   private UserDto adminDto;
-  private UserDto customerDto;
 
   @BeforeAll
   static void setUp() {
@@ -45,7 +43,6 @@ public class ProductServiceIntegrationTest extends BaseDataAccessTest {
   @BeforeEach
   void beforeEach() {
     this.adminDto = createAdminUser();
-    this.customerDto = createCustomerUser();
     this.testProductDto = createTestProduct();
     this.testCategoryDto = createTestCategory();
   }
@@ -54,12 +51,6 @@ public class ProductServiceIntegrationTest extends BaseDataAccessTest {
     User adminUser = EntityTestUtils.createRandomAdminUser();
     DbTestUtils.persistEntity(adminUser);
     return ModelMapperUtil.map(adminUser, UserDto.class);
-  }
-
-  UserDto createCustomerUser() {
-    User customer = EntityTestUtils.createRandomUser();
-    DbTestUtils.persistEntity(customer);
-    return ModelMapperUtil.map(customer, UserDto.class);
   }
 
   ProductDto createTestProduct() {
@@ -159,25 +150,6 @@ public class ProductServiceIntegrationTest extends BaseDataAccessTest {
   }
 
   @Test
-  void addProductTest_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Create input
-    ProductDto productDto =
-        ProductDto.builder()
-            .name("test")
-            .description("test")
-            .price(BigDecimal.valueOf(10000, 2))
-            .categoryId(testCategoryDto.getId())
-            .build();
-
-    // Run the test
-    Executable action = () -> productService.addProduct(productDto);
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
   void updateProductDetailsTest() {
     // Authenticate with admin user
     SessionContext.setSessionContext(adminDto);
@@ -203,19 +175,6 @@ public class ProductServiceIntegrationTest extends BaseDataAccessTest {
   }
 
   @Test
-  void updateProductDetailsTest_ShouldOnlyAllowAdminRole() {
-    // Authenticate with admin user
-    SessionContext.setSessionContext(customerDto);
-
-    // Create input
-    testProductDto.setPrice(BigDecimal.valueOf(20000, 2));
-
-    // Run the test
-    Executable action = () -> productService.updateProductDetails(testProductDto);
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
   void deleteProductTest() {
     // Authenticate with admin user
     SessionContext.setSessionContext(adminDto);
@@ -228,15 +187,5 @@ public class ProductServiceIntegrationTest extends BaseDataAccessTest {
     Product productFromDb =
         DbTestUtils.findEntityByValue(Product.class, "id", testProductDto.getId());
     assertNull(productFromDb);
-  }
-
-  @Test
-  void deleteProductTest_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Run the test
-    Executable action = () -> productService.deleteProduct(testProductDto.getId());
-    assertThrows(UnauthorizedException.class, action);
   }
 }

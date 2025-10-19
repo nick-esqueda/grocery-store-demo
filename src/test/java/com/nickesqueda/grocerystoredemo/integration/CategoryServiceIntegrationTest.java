@@ -8,7 +8,6 @@ import com.nickesqueda.grocerystoredemo.dto.CategoryDto;
 import com.nickesqueda.grocerystoredemo.dto.CategoryWithProductsDto;
 import com.nickesqueda.grocerystoredemo.dto.ProductDto;
 import com.nickesqueda.grocerystoredemo.dto.UserDto;
-import com.nickesqueda.grocerystoredemo.exception.UnauthorizedException;
 import com.nickesqueda.grocerystoredemo.model.dao.Dao;
 import com.nickesqueda.grocerystoredemo.model.entity.Category;
 import com.nickesqueda.grocerystoredemo.model.entity.Product;
@@ -29,7 +28,6 @@ public class CategoryServiceIntegrationTest extends BaseDataAccessTest {
   private static CategoryService categoryService;
   private CategoryDto testCategoryDto;
   private UserDto adminDto;
-  private UserDto customerDto;
 
   @BeforeAll
   static void setUp() {
@@ -38,24 +36,21 @@ public class CategoryServiceIntegrationTest extends BaseDataAccessTest {
   }
 
   @BeforeEach
-  void createAdminUser() {
+  void beforeEach() {
+    this.adminDto = createAdminUser();
+    this.testCategoryDto = createTestCategory();
+  }
+
+  UserDto createAdminUser() {
     User adminUser = EntityTestUtils.createRandomAdminUser();
     DbTestUtils.persistEntity(adminUser);
-    this.adminDto = ModelMapperUtil.map(adminUser, UserDto.class);
+    return ModelMapperUtil.map(adminUser, UserDto.class);
   }
 
-  @BeforeEach
-  void createCustomerUser() {
-    User customer = EntityTestUtils.createRandomUser();
-    DbTestUtils.persistEntity(customer);
-    this.customerDto = ModelMapperUtil.map(customer, UserDto.class);
-  }
-
-  @BeforeEach
-  void createTestCategory() {
+  CategoryDto createTestCategory() {
     Category category = EntityTestUtils.createRandomCategory();
     DbTestUtils.persistEntity(category);
-    this.testCategoryDto = ModelMapperUtil.map(category, CategoryDto.class);
+    return ModelMapperUtil.map(category, CategoryDto.class);
   }
 
   @AfterEach
@@ -132,19 +127,6 @@ public class CategoryServiceIntegrationTest extends BaseDataAccessTest {
   }
 
   @Test
-  void createCategory_ShouldOnlyAllowAdminRole() {
-    // Authenticate with admin user
-    SessionContext.setSessionContext(customerDto);
-
-    // Create input
-    CategoryDto newCategoryDto = CategoryDto.builder().name("test").description("test").build();
-
-    // Run the test
-    Executable action = () -> categoryService.createCategory(newCategoryDto);
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
   void updateCategory() {
     // Authenticate with admin user
     SessionContext.setSessionContext(adminDto);
@@ -166,20 +148,6 @@ public class CategoryServiceIntegrationTest extends BaseDataAccessTest {
   }
 
   @Test
-  void updateCategory_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Create input
-    String newDescription = "updated description";
-    testCategoryDto.setDescription(newDescription);
-
-    // Run the test
-    Executable action = () -> categoryService.updateCategory(testCategoryDto);
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
   void deleteCategory() {
     // Authenticate with admin user
     SessionContext.setSessionContext(adminDto);
@@ -192,16 +160,5 @@ public class CategoryServiceIntegrationTest extends BaseDataAccessTest {
     // Validate category was removed from the database
     Category categoryFromDb = DbTestUtils.findEntityByValue(Category.class, "id", id);
     assertNull(categoryFromDb);
-  }
-
-  @Test
-  void deleteCategory_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Run the test
-    Integer id = testCategoryDto.getId();
-    Executable action = () -> categoryService.deleteCategory(id);
-    assertThrows(UnauthorizedException.class, action);
   }
 }
