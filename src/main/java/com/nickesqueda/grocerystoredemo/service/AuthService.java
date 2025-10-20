@@ -2,13 +2,13 @@ package com.nickesqueda.grocerystoredemo.service;
 
 import com.nickesqueda.grocerystoredemo.dto.UserCredentialsDto;
 import com.nickesqueda.grocerystoredemo.dto.UserDto;
-import com.nickesqueda.grocerystoredemo.exception.EntityNotSavedException;
 import com.nickesqueda.grocerystoredemo.exception.PasswordMismatchException;
 import com.nickesqueda.grocerystoredemo.model.dao.Dao;
 import com.nickesqueda.grocerystoredemo.model.dao.ReadOnlyDao;
 import com.nickesqueda.grocerystoredemo.model.entity.Role;
 import com.nickesqueda.grocerystoredemo.model.entity.RoleName;
 import com.nickesqueda.grocerystoredemo.model.entity.User;
+import com.nickesqueda.grocerystoredemo.security.AuthValidator;
 import com.nickesqueda.grocerystoredemo.security.PasswordHasher;
 import com.nickesqueda.grocerystoredemo.security.SessionContext;
 import com.nickesqueda.grocerystoredemo.util.ModelMapperUtil;
@@ -22,6 +22,8 @@ public class AuthService {
   private final Dao<User> userDao;
 
   public void registerUser(UserDto userDto, String rawPassword) {
+    AuthValidator.requireNoAuth();
+
     Role customerRole = roleDao.findOneByValue("name", RoleName.ROLE_CUSTOMER);
     User user = ModelMapperUtil.map(userDto, User.class);
     user.setRoles(Set.of(customerRole));
@@ -34,6 +36,8 @@ public class AuthService {
   }
 
   public void authenticateUser(UserCredentialsDto userCredentials) {
+    AuthValidator.requireNoAuth();
+
     String username = userCredentials.getUsername();
     String rawPassword = userCredentials.getRawPassword();
 
