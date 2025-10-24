@@ -16,11 +16,14 @@ import com.nickesqueda.grocerystoredemo.testutils.EntityTestUtils;
 import com.nickesqueda.grocerystoredemo.util.ModelMapperUtil;
 import java.math.BigDecimal;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AuthValidationIntegrationTest extends BaseDataAccessTest {
 
@@ -29,11 +32,11 @@ public class AuthValidationIntegrationTest extends BaseDataAccessTest {
   private static ProductService productService;
   private static StoreService storeService;
   private static InventoryService inventoryService;
+  private static CategoryDto testCategoryDto;
+  private static ProductDto testProductDto;
+  private static StoreDto testStoreDto;
+  private static InventoryItemDto testInventoryItemDto;
   private UserDto customerDto;
-  private CategoryDto testCategoryDto;
-  private ProductDto testProductDto;
-  private StoreDto testStoreDto;
-  private InventoryItemDto testInventoryItemDto;
 
   @BeforeAll
   static void setUp() {
@@ -52,15 +55,16 @@ public class AuthValidationIntegrationTest extends BaseDataAccessTest {
 
     Dao<InventoryItem> inventoryItemDao = new Dao<>(InventoryItem.class);
     inventoryService = new InventoryService(inventoryItemDao, storeService, productService);
+
+    testCategoryDto = createTestCategory();
+    testProductDto = createTestProduct();
+    testStoreDto = createTestStore();
+    testInventoryItemDto = createInventoryItem();
   }
 
   @BeforeEach
   void beforeEach() {
     this.customerDto = createCustomerUser();
-    this.testCategoryDto = createTestCategory();
-    this.testProductDto = createTestProduct();
-    this.testStoreDto = createTestStore();
-    this.testInventoryItemDto = createInventoryItem();
   }
 
   UserDto createCustomerUser() {
@@ -69,25 +73,25 @@ public class AuthValidationIntegrationTest extends BaseDataAccessTest {
     return ModelMapperUtil.map(customer, UserDto.class);
   }
 
-  CategoryDto createTestCategory() {
+  static CategoryDto createTestCategory() {
     Category category = EntityTestUtils.createRandomCategory();
     DbTestUtils.persistEntity(category);
     return ModelMapperUtil.map(category, CategoryDto.class);
   }
 
-  ProductDto createTestProduct() {
+  static ProductDto createTestProduct() {
     Product product = EntityTestUtils.createRandomProduct();
     DbTestUtils.persistEntity(product);
     return ModelMapperUtil.map(product, ProductDto.class);
   }
 
-  StoreDto createTestStore() {
+  static StoreDto createTestStore() {
     Store store = EntityTestUtils.createRandomStore();
     DbTestUtils.persistEntity(store);
     return ModelMapperUtil.map(store, StoreDto.class);
   }
 
-  InventoryItemDto createInventoryItem() {
+  static InventoryItemDto createInventoryItem() {
     InventoryItem inventoryItem = EntityTestUtils.createRandomInventoryItem(5, 0);
     DbTestUtils.persistEntity(inventoryItem);
     return ModelMapperUtil.map(inventoryItem, InventoryItemDto.class);
@@ -96,6 +100,46 @@ public class AuthValidationIntegrationTest extends BaseDataAccessTest {
   @AfterEach
   void clearSession() {
     SessionContext.clearSession();
+  }
+
+  @ParameterizedTest
+  @MethodSource("serviceMethodProvider")
+  void methodShouldOnlyAllowAdminRole(Executable serviceMethod) {
+    SessionContext.setSessionContext(customerDto);
+    assertThrows(UnauthorizedException.class, serviceMethod);
+  }
+
+  static Stream<Executable> serviceMethodProvider() {
+    // For createX() methods
+    CategoryDto newCategoryDto = CategoryDto.builder().name("test").description("test").build();
+    ProductDto newProductDto =
+        ProductDto.builder()
+            .name("test")
+            .description("test")
+            .price(BigDecimal.valueOf(10000, 2))
+            .categoryId(testCategoryDto.getId())
+            .build();
+    StoreDto newStoreDto = StoreDto.builder().address("test").totalPickupSpots(20).build();
+
+    // For updateX() methods
+    testCategoryDto.setDescription("updated description");
+    testProductDto.setPrice(BigDecimal.valueOf(20000, 2));
+    testStoreDto.setTotalPickupSpots(20);
+
+    return Stream.of(
+        () -> categoryService.createCategory(newCategoryDto),
+        () -> categoryService.updateCategory(testCategoryDto),
+        () -> categoryService.deleteCategory(testCategoryDto.getId()),
+        () -> productService.addProduct(newProductDto),
+        () -> productService.updateProductDetails(testProductDto),
+        () -> productService.deleteProduct(testProductDto.getId()),
+        () -> storeService.createStore(newStoreDto),
+        () -> storeService.updateStoreDetails(testStoreDto),
+        () -> storeService.deleteStore(testStoreDto.getId()),
+        () -> inventoryService.addInventoryItem(testStoreDto.getId(), testProductDto.getId(), 5),
+        () -> inventoryService.addQuantity(testInventoryItemDto.getId(), 5),
+        () -> inventoryService.deductQuantity(testInventoryItemDto.getId(), 1),
+        () -> inventoryService.deleteInventoryItem(testInventoryItemDto.getId()));
   }
 
   @Test
@@ -128,162 +172,5 @@ public class AuthValidationIntegrationTest extends BaseDataAccessTest {
     // Run the test
     Executable action = () -> authService.authenticateUser(credentials);
     assertThrows(NoAuthRequiredException.class, action);
-  }
-
-  @Test
-  void createCategory_ShouldOnlyAllowAdminRole() {
-    // Authenticate with admin user
-    SessionContext.setSessionContext(customerDto);
-
-    // Create input
-    CategoryDto newCategoryDto = CategoryDto.builder().name("test").description("test").build();
-
-    // Run the test
-    Executable action = () -> categoryService.createCategory(newCategoryDto);
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
-  void updateCategory_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Create input
-    String newDescription = "updated description";
-    testCategoryDto.setDescription(newDescription);
-
-    // Run the test
-    Executable action = () -> categoryService.updateCategory(testCategoryDto);
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
-  void deleteCategory_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Run the test
-    Integer id = testCategoryDto.getId();
-    Executable action = () -> categoryService.deleteCategory(id);
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
-  void addProduct_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Create input
-    ProductDto productDto =
-        ProductDto.builder()
-            .name("test")
-            .description("test")
-            .price(BigDecimal.valueOf(10000, 2))
-            .categoryId(testCategoryDto.getId())
-            .build();
-
-    // Run the test
-    Executable action = () -> productService.addProduct(productDto);
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
-  void updateProductDetails_ShouldOnlyAllowAdminRole() {
-    // Authenticate with admin user
-    SessionContext.setSessionContext(customerDto);
-
-    // Create input
-    testProductDto.setPrice(BigDecimal.valueOf(20000, 2));
-
-    // Run the test
-    Executable action = () -> productService.updateProductDetails(testProductDto);
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
-  void deleteProduct_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Run the test
-    Executable action = () -> productService.deleteProduct(testProductDto.getId());
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
-  void createStore_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Create input
-    StoreDto storeDto = StoreDto.builder().address("test").totalPickupSpots(20).build();
-
-    // Run the test
-    Executable action = () -> storeService.createStore(storeDto);
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
-  void updateStoreDetails_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Create input
-    testStoreDto.setTotalPickupSpots(20);
-
-    // Run the test
-    Executable action = () -> storeService.updateStoreDetails(testStoreDto);
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
-  void deleteStore_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Run the test
-    Executable action = () -> storeService.deleteStore(testStoreDto.getId());
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
-  void addInventoryItem_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Run the test
-    Executable action =
-        () -> inventoryService.addInventoryItem(testStoreDto.getId(), testProductDto.getId(), 5);
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
-  void addQuantity_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Run the test
-    Executable action = () -> inventoryService.addQuantity(testInventoryItemDto.getId(), 5);
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
-  void deductQuantity_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Run the test
-    Executable action = () -> inventoryService.deductQuantity(testInventoryItemDto.getId(), 1);
-    assertThrows(UnauthorizedException.class, action);
-  }
-
-  @Test
-  void deleteInventoryItem_ShouldOnlyAllowAdminRole() {
-    // Authenticate with customer user
-    SessionContext.setSessionContext(customerDto);
-
-    // Run the test
-    Executable action = () -> inventoryService.deleteInventoryItem(testInventoryItemDto.getId());
-    assertThrows(UnauthorizedException.class, action);
   }
 }
