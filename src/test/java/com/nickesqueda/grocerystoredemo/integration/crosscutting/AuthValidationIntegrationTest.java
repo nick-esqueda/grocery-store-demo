@@ -40,20 +40,17 @@ public class AuthValidationIntegrationTest extends BaseDataAccessTest {
 
   @BeforeAll
   static void setUp() {
-    Dao<User> userDao = new Dao<>(User.class);
-    ReadOnlyDao<Role> roleDao = new Dao<>(Role.class);
+    var roleDao = new ReadOnlyDao<>(Role.class);
+    var userDao = new Dao<>(User.class);
+    var categoryDao = new Dao<>(Category.class);
+    var productDao = new Dao<>(Product.class);
+    var storeDao = new Dao<>(Store.class);
+    var inventoryItemDao = new Dao<>(InventoryItem.class);
+
     authService = new AuthService(roleDao, userDao);
-
-    Dao<Category> categoryDao = new Dao<>(Category.class);
     categoryService = new CategoryService(categoryDao);
-
-    Dao<Product> productDao = new Dao<>(Product.class);
-    productService = new ProductService(productDao, categoryDao);
-
-    Dao<Store> storeDao = new Dao<>(Store.class);
+    productService = new ProductService(productDao, categoryService);
     storeService = new StoreService(storeDao);
-
-    Dao<InventoryItem> inventoryItemDao = new Dao<>(InventoryItem.class);
     inventoryService = new InventoryService(inventoryItemDao, storeService, productService);
 
     testCategoryDto = createTestCategory();

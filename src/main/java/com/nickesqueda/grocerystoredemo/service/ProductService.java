@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductService {
 
   private final Dao<Product> productDao;
-  private final Dao<Category> categoryDao;
+  private final CategoryService categoryService;
 
   public Product getProductEntity(Integer id) {
     return productDao.findOneByValue("id", id);
@@ -34,7 +34,7 @@ public class ProductService {
   public ProductDto addProduct(ProductDto productDto) {
     AuthValidator.requireAdminRole();
 
-    Category category = categoryDao.findOneByValue("id", productDto.getCategoryId());
+    Category category = categoryService.getCategoryEntity(productDto.getCategoryId());
     Product product = ModelMapperUtil.map(productDto, Product.class);
     product.setCategory(category);
 
@@ -47,7 +47,7 @@ public class ProductService {
     AuthValidator.requireAdminRole();
 
     Product product = productDao.findOneByValue("id", productDto.getId());
-    Category category = categoryDao.findOneByValue("id", productDto.getCategoryId());
+    Category category = categoryService.getCategoryEntity(productDto.getCategoryId());
 
     product.setCategory(category);
     ModelMapperUtil.map(productDto, product);

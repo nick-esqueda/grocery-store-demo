@@ -12,6 +12,7 @@ import com.nickesqueda.grocerystoredemo.model.entity.Category;
 import com.nickesqueda.grocerystoredemo.model.entity.Product;
 import com.nickesqueda.grocerystoredemo.model.entity.User;
 import com.nickesqueda.grocerystoredemo.security.SessionContext;
+import com.nickesqueda.grocerystoredemo.service.CategoryService;
 import com.nickesqueda.grocerystoredemo.service.ProductService;
 import com.nickesqueda.grocerystoredemo.testutils.BaseDataAccessTest;
 import com.nickesqueda.grocerystoredemo.testutils.DbTestUtils;
@@ -35,9 +36,10 @@ public class ProductServiceIntegrationTest extends BaseDataAccessTest {
 
   @BeforeAll
   static void setUp() {
-    Dao<Product> productDao = new Dao<>(Product.class);
-    Dao<Category> categoryDao = new Dao<>(Category.class);
-    productService = new ProductService(productDao, categoryDao);
+    var productDao = new Dao<>(Product.class);
+    var categoryDao = new Dao<>(Category.class);
+    var categoryService = new CategoryService(categoryDao);
+    productService = new ProductService(productDao, categoryService);
   }
 
   @BeforeEach

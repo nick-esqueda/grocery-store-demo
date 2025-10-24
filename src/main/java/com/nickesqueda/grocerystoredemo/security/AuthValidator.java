@@ -9,18 +9,33 @@ import com.nickesqueda.grocerystoredemo.model.entity.RoleName;
 public final class AuthValidator {
 
   public static void requireAdminRole() {
+    requireActiveSession();
+
     UserDto sessionUser = SessionContext.getSessionUser();
-    if (!SessionContext.isSessionActive() || sessionUser == null) {
-      throw new UnauthenticatedException();
-    }
     if (!sessionUser.getRoles().contains(RoleName.ROLE_ADMIN)) {
       throw new UnauthorizedException(sessionUser.getId(), RoleName.ROLE_ADMIN);
+    }
+  }
+
+  public static void requireSubjectSessionMatch(Integer subjectId) {
+    requireActiveSession();
+
+    Integer sessionUserId = SessionContext.getSessionUser().getId();
+    if (!subjectId.equals(sessionUserId)) {
+      throw new UnauthorizedException(subjectId, sessionUserId);
     }
   }
 
   public static void requireNoAuth() {
     if (SessionContext.isSessionActive()) {
       throw new NoAuthRequiredException();
+    }
+  }
+
+  public static void requireActiveSession() {
+    UserDto sessionUser = SessionContext.getSessionUser();
+    if (!SessionContext.isSessionActive() || sessionUser == null) {
+      throw new UnauthenticatedException();
     }
   }
 }

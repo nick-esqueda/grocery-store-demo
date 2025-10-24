@@ -111,9 +111,9 @@ public class UserServiceIntegrationTest extends BaseDataAccessTest {
   }
 
   @Test
-  void deleteAccountTest() {
+  void deleteCurrentAccountTest() {
     // Run the test
-    Executable action = () -> userService.deleteAccount();
+    Executable action = () -> userService.deleteCurrentAccount();
     assertDoesNotThrow(action);
 
     // Verify the user was removed from the database

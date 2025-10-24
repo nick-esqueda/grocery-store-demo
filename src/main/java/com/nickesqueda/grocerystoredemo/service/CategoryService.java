@@ -14,6 +14,10 @@ public class CategoryService {
 
   private final Dao<Category> categoryDao;
 
+  public Category getCategoryEntity(Integer id) {
+    return categoryDao.findOneByValue("id", id);
+  }
+
   public CategoryDto getCategory(Integer id) {
     Category category = categoryDao.findOneByValue("id", id);
     return ModelMapperUtil.map(category, CategoryDto.class);

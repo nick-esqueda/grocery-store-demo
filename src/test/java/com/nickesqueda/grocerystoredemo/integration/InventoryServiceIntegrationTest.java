@@ -10,6 +10,7 @@ import com.nickesqueda.grocerystoredemo.exception.UnsafeDeletionException;
 import com.nickesqueda.grocerystoredemo.model.dao.Dao;
 import com.nickesqueda.grocerystoredemo.model.entity.*;
 import com.nickesqueda.grocerystoredemo.security.SessionContext;
+import com.nickesqueda.grocerystoredemo.service.CategoryService;
 import com.nickesqueda.grocerystoredemo.service.InventoryService;
 import com.nickesqueda.grocerystoredemo.service.ProductService;
 import com.nickesqueda.grocerystoredemo.service.StoreService;
@@ -30,12 +31,13 @@ public class InventoryServiceIntegrationTest extends BaseDataAccessTest {
 
   @BeforeAll
   static void setUp() {
-    Dao<InventoryItem> inventoryItemDao = new Dao<>(InventoryItem.class);
-    Dao<Store> storeDao = new Dao<>(Store.class);
-    Dao<Product> productDao = new Dao<>(Product.class);
-    Dao<Category> categoryDao = new Dao<>(Category.class);
-    StoreService storeService = new StoreService(storeDao);
-    ProductService productService = new ProductService(productDao, categoryDao);
+    var inventoryItemDao = new Dao<>(InventoryItem.class);
+    var storeDao = new Dao<>(Store.class);
+    var productDao = new Dao<>(Product.class);
+    var categoryDao = new Dao<>(Category.class);
+    var storeService = new StoreService(storeDao);
+    var categoryService = new CategoryService(categoryDao);
+    var productService = new ProductService(productDao, categoryService);
     inventoryService = new InventoryService(inventoryItemDao, storeService, productService);
   }
 
