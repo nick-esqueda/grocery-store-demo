@@ -12,6 +12,10 @@ public class StoreService {
 
   private final Dao<Store> storeDao;
 
+  public Store getStoreEntity(Integer id) {
+    return storeDao.findOneByValue("id", id);
+  }
+
   public StoreDto getStoreDetails(Integer id) {
     Store store = storeDao.findOneByValue("id", id);
     return ModelMapperUtil.map(store, StoreDto.class);

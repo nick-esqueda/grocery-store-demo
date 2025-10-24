@@ -9,10 +9,7 @@ import com.nickesqueda.grocerystoredemo.model.dao.Dao;
 import com.nickesqueda.grocerystoredemo.model.dao.ReadOnlyDao;
 import com.nickesqueda.grocerystoredemo.model.entity.*;
 import com.nickesqueda.grocerystoredemo.security.SessionContext;
-import com.nickesqueda.grocerystoredemo.service.AuthService;
-import com.nickesqueda.grocerystoredemo.service.CategoryService;
-import com.nickesqueda.grocerystoredemo.service.ProductService;
-import com.nickesqueda.grocerystoredemo.service.StoreService;
+import com.nickesqueda.grocerystoredemo.service.*;
 import com.nickesqueda.grocerystoredemo.testutils.BaseDataAccessTest;
 import com.nickesqueda.grocerystoredemo.testutils.DbTestUtils;
 import com.nickesqueda.grocerystoredemo.testutils.EntityTestUtils;
@@ -31,10 +28,12 @@ public class AuthValidationIntegrationTest extends BaseDataAccessTest {
   private static CategoryService categoryService;
   private static ProductService productService;
   private static StoreService storeService;
+  private static InventoryService inventoryService;
   private UserDto customerDto;
   private CategoryDto testCategoryDto;
   private ProductDto testProductDto;
   private StoreDto testStoreDto;
+  private InventoryItemDto testInventoryItemDto;
 
   @BeforeAll
   static void setUp() {
@@ -50,6 +49,9 @@ public class AuthValidationIntegrationTest extends BaseDataAccessTest {
 
     Dao<Store> storeDao = new Dao<>(Store.class);
     storeService = new StoreService(storeDao);
+
+    Dao<InventoryItem> inventoryItemDao = new Dao<>(InventoryItem.class);
+    inventoryService = new InventoryService(inventoryItemDao, storeService, productService);
   }
 
   @BeforeEach
@@ -58,6 +60,7 @@ public class AuthValidationIntegrationTest extends BaseDataAccessTest {
     this.testCategoryDto = createTestCategory();
     this.testProductDto = createTestProduct();
     this.testStoreDto = createTestStore();
+    this.testInventoryItemDto = createInventoryItem();
   }
 
   UserDto createCustomerUser() {
@@ -82,6 +85,12 @@ public class AuthValidationIntegrationTest extends BaseDataAccessTest {
     Store store = EntityTestUtils.createRandomStore();
     DbTestUtils.persistEntity(store);
     return ModelMapperUtil.map(store, StoreDto.class);
+  }
+
+  InventoryItemDto createInventoryItem() {
+    InventoryItem inventoryItem = EntityTestUtils.createRandomInventoryItem(5, 0);
+    DbTestUtils.persistEntity(inventoryItem);
+    return ModelMapperUtil.map(inventoryItem, InventoryItemDto.class);
   }
 
   @AfterEach
@@ -234,6 +243,47 @@ public class AuthValidationIntegrationTest extends BaseDataAccessTest {
 
     // Run the test
     Executable action = () -> storeService.deleteStore(testStoreDto.getId());
+    assertThrows(UnauthorizedException.class, action);
+  }
+
+  @Test
+  void addInventoryItem_ShouldOnlyAllowAdminRole() {
+    // Authenticate with customer user
+    SessionContext.setSessionContext(customerDto);
+
+    // Run the test
+    Executable action =
+        () -> inventoryService.addInventoryItem(testStoreDto.getId(), testProductDto.getId(), 5);
+    assertThrows(UnauthorizedException.class, action);
+  }
+
+  @Test
+  void addQuantity_ShouldOnlyAllowAdminRole() {
+    // Authenticate with customer user
+    SessionContext.setSessionContext(customerDto);
+
+    // Run the test
+    Executable action = () -> inventoryService.addQuantity(testInventoryItemDto.getId(), 5);
+    assertThrows(UnauthorizedException.class, action);
+  }
+
+  @Test
+  void deductQuantity_ShouldOnlyAllowAdminRole() {
+    // Authenticate with customer user
+    SessionContext.setSessionContext(customerDto);
+
+    // Run the test
+    Executable action = () -> inventoryService.deductQuantity(testInventoryItemDto.getId(), 1);
+    assertThrows(UnauthorizedException.class, action);
+  }
+
+  @Test
+  void deleteInventoryItem_ShouldOnlyAllowAdminRole() {
+    // Authenticate with customer user
+    SessionContext.setSessionContext(customerDto);
+
+    // Run the test
+    Executable action = () -> inventoryService.deleteInventoryItem(testInventoryItemDto.getId());
     assertThrows(UnauthorizedException.class, action);
   }
 }

@@ -190,6 +190,21 @@ public final class EntityTestUtils {
         .build();
   }
 
+  public static InventoryItem createRandomInventoryItem(Integer quantity, Integer quantityOnHold) {
+    Store store = createRandomStore();
+    Product product = createRandomProduct();
+
+    DbTestUtils.persistEntity(store);
+    DbTestUtils.persistEntity(product);
+
+    return InventoryItem.builder()
+        .store(store)
+        .product(product)
+        .quantity(quantity)
+        .quantityOnHold(quantityOnHold)
+        .build();
+  }
+
   public static PickupHours createRandomPickupHours() {
     Store store = createRandomStore();
     DbTestUtils.persistEntity(store);

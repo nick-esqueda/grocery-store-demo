@@ -15,6 +15,10 @@ public class ProductService {
   private final Dao<Product> productDao;
   private final Dao<Category> categoryDao;
 
+  public Product getProductEntity(Integer id) {
+    return productDao.findOneByValue("id", id);
+  }
+
   public ProductDto getProductDetails(Integer productId) {
     Product product = productDao.findOneByValue("id", productId);
     return ModelMapperUtil.map(product, ProductDto.class);
